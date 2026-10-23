@@ -1,0 +1,20 @@
+{
+  "name": "moadbook",
+  "short_name": "moadbook",
+  "description": "مساحة اجتماعية عربية تجمع المنشورات والمجتمعات والمحادثات.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/moadbook/",
+  "scope": "/moadbook/",
+  "display": "standalone",
+  "background_color": "#FCFBFF",
+  "theme_color": "#5147D9",
+  "icons": [
+    {
+      "src": "/moadbook/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
