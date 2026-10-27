@@ -184,3 +184,32 @@ html.dark-mode .media-preview{background:#151c2b;border-color:var(--line)}
 html.dark-mode .community-hero{background:linear-gradient(130deg,#211e3a,#182c37);border-color:var(--line)}html.dark-mode .community-pill{background:#292740;color:#d0c9ff}html.dark-mode .post-export-preview{background:#151b29}
 @media(min-width:620px){.post-export-overlay{align-items:center}.post-export-sheet{border-radius:24px}.community-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.community-orb,.community-card{transition:none!important}}
+
+
+/* Premium social reactions: calm default, vivid on like, with reduced-motion support. */
+.action-button.like-action,.action-button.comment-action{min-height:42px;border-radius:14px;transition:background .22s,color .22s,box-shadow .22s,border-color .22s,transform .18s}
+.action-button.like-action{position:relative;overflow:visible;border:1px solid color-mix(in srgb,var(--accent) 10%,transparent);background:linear-gradient(145deg,#fbfaff,#f6f3ff);color:#655f81}
+.action-button.like-action .ui-icon{width:19px;height:19px;transition:transform .22s,filter .22s}
+.action-button.like-action.liked{color:#d93372;border-color:#f3bfd1;background:linear-gradient(135deg,#fff0f5,#f5efff);box-shadow:0 6px 18px #d933721c}
+.action-button.like-action.liked .ui-icon{filter:drop-shadow(0 3px 5px #d9337240)}
+.action-button.like-action.heart-burst .ui-icon,.comment-like-button.heart-burst .ui-icon{animation:moad-heart-pop .58s cubic-bezier(.18,.82,.24,1)}
+.action-button.like-action.heart-burst:after,.comment-like-button.heart-burst:after{content:'✦';position:absolute;top:1px;inset-inline-start:calc(50% - 5px);color:#f1a0be;font-size:12px;pointer-events:none;animation:moad-heart-spark .58s ease-out both}
+@keyframes moad-heart-pop{0%{transform:scale(1)}38%{transform:scale(1.45) rotate(-8deg)}70%{transform:scale(.92) rotate(4deg)}100%{transform:scale(1)}}
+@keyframes moad-heart-spark{0%{opacity:0;transform:translateY(5px) scale(.4)}35%{opacity:1;transform:translateY(-7px) scale(1.15)}100%{opacity:0;transform:translateY(-14px) scale(.7)}}
+.action-button.comment-action{color:#615f7b}
+.comment-row{position:relative;transition:border-color .2s,background .2s,transform .2s}
+.comment-row:focus-within{border-color:color-mix(in srgb,var(--accent) 28%,var(--line));background:linear-gradient(135deg,#faf9ff,#fff)}
+.comment-reactions{display:flex;align-items:center;min-height:30px;margin-top:5px}
+.comment-like-button{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:44px;min-height:31px;padding:5px 9px;border:1px solid transparent;border-radius:999px;background:transparent;color:#8a879b;font-size:11px;font-weight:800;transition:background .2s,color .2s,border-color .2s,transform .18s,box-shadow .2s}
+.comment-like-button .ui-icon{width:15px;height:15px;transition:transform .2s,filter .2s}
+.comment-like-button:hover{background:#fff1f6;color:#cc3970}
+.comment-like-button:active{transform:scale(.94)}
+.comment-like-button.liked{color:#d93372;border-color:#f5d4e0;background:linear-gradient(135deg,#fff1f6,#f7f1ff);box-shadow:0 3px 10px #d9337214}
+.comment-like-button.liked .ui-icon{filter:drop-shadow(0 2px 4px #d9337238)}
+.comment-like-button.unavailable{color:#9a97a9}
+.action-button.like-action:focus-visible,.comment-like-button:focus-visible,.action-button.comment-action:focus-visible{outline:3px solid #5147d955;outline-offset:2px}
+html.dark-mode .action-button.like-action,html.dark-mode .action-button.comment-action{background:#24263a;border-color:#393750;color:#c3c4d5}
+html.dark-mode .action-button.like-action.liked,html.dark-mode .comment-like-button.liked{background:linear-gradient(135deg,#402639,#2b2740);border-color:#70405d;color:#ff9cba}
+html.dark-mode .comment-row:focus-within{background:linear-gradient(135deg,#1f2435,#25243a)}
+html.dark-mode .comment-like-button:hover{background:#362737;color:#ff9cba}
+@media(prefers-reduced-motion:reduce){.action-button.like-action,.action-button.comment-action,.comment-like-button,.comment-row{transition:none!important}.action-button.like-action.heart-burst:after,.comment-like-button.heart-burst:after,.action-button.like-action.heart-burst .ui-icon,.comment-like-button.heart-burst .ui-icon{animation:none!important}}
