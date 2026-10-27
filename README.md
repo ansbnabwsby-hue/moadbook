@@ -1,39 +1,25 @@
-# moadbook — الموقع العربي
+# moadbook
 
-موقع moadbook الاجتماعي بواجهة عربية RTL، مبني على Expo Router وReact Native Web وTypeScript. يعيد استخدام واجهات التطبيق الحالية ويرتبط بمشروع Firebase نفسه للمصادقة وRealtime Database؛ لم تُنشأ قاعدة بديلة ولم تُغيّر قواعد Firebase.
+موقع moadbook الاجتماعي بالعربية وواجهة RTL، منشور عبر GitHub Pages ومهيأ للإضافة إلى شاشة iPhone الرئيسية كـPWA.
 
-## الموقع والتثبيت على iPhone
+**الموقع المباشر:** <https://ansbnabwsby-hue.github.io/moadbook/>
 
-بعد نجاح سير GitHub Pages سيكون الموقع متاحًا على: <https://ansbnabwsby-hue.github.io/moadbook/>
-
-على iPhone افتح الرابط في Safari، ثم اختر **مشاركة → إضافة إلى الشاشة الرئيسية**. يدعم الموقع manifest وservice worker، ويحفظ نسخة shell وملفات الواجهة فقط. بيانات الحسابات والمنشورات والمحادثات لا تُخزّن محليًا؛ يلزم الاتصال بالإنترنت للوصول إلى Firebase.
+يعتمد الموقع على مصدر PWA العربي السابق الأقرب إلى Android 1.10.5، بما فيه المنشورات بأنواعها، الاستطلاعات، تحرير صورة واحدة، البحث والتصفية، الحفظ والمشاركة كصورة، الأعضاء والأصدقاء، المجتمعات، الرسائل، الإشعارات، وأدوات المظهر والخصوصية الموجودة في المصدر. تفاصيل النطاق والقيود في [`moadbook-pwa/README-ar.md`](./moadbook-pwa/README-ar.md).
 
 ## المصدر
 
-مصدر التطبيق الكامل وملفات Expo في [`moadbook-web/`](./moadbook-web/). تحديثات الفرع `main` تشغّل GitHub Actions، الذي يثبّت الاعتماديات ويصدّر نسخة الويب مع قاعدة المسار `/moadbook` ثم ينشرها إلى GitHub Pages.
+- [`moadbook-pwa/`](./moadbook-pwa/): ملفات الموقع المنشور الثابتة، بما فيها الواجهة وملفات PWA والخطوط.
+- [`moadbook-web/`](./moadbook-web/): مصدر Expo/React Native الأصلي، محفوظ كما هو.
+- [`plan.md`](./plan.md) و[`TODO.md`](./TODO.md): خطة التحديث ونتائجه.
 
-## التشغيل والبناء محليًا
+## النشر
 
-يتطلب Node.js 22 وpnpm 9.12.0:
+كل دفع إلى `main` يشغّل `.github/workflows/static.yml` ويرفع محتويات `moadbook-pwa/` مباشرة إلى GitHub Pages. لا يجري النشر اتصالًا بقاعدة Firebase ولا يغيّر قواعدها.
 
-```bash
-cd moadbook-web
-pnpm install --frozen-lockfile
-pnpm dev
-```
+## التثبيت على iPhone
 
-لتصدير نسخة GitHub Pages:
+افتح رابط الموقع في Safari ثم **مشاركة → إضافة إلى الشاشة الرئيسية**. الإشعارات داخل الموقع تظهر وفق صلاحيات المتصفح أثناء الاستخدام؛ Push بالخلفية يحتاج إعدادًا خلفيًا منفصلًا. يجب الاتصال بالإنترنت لعمليات Firebase.
 
-```bash
-cd moadbook-web
-EXPO_PUBLIC_BASE_URL=/moadbook pnpm exec expo export --platform web --output-dir dist
-node scripts/prepare-pages.mjs
-```
+## Firebase
 
-## Firebase والأمان
-
-إعداد Firebase الموجود في `moadbook-web/app.config.ts` هو إعداد عميل عام مستخدم في تطبيق moadbook. صلاحيات الوصول الفعلية تتحكم بها قواعد Firebase؛ لا تضع مفاتيح إدارة أو أسرارًا أو بيانات مستخدمين في هذا المستودع العام، ولا تجعل القواعد مفتوحة للعامة. اختبارات واجهة الويب لا تكتب في قاعدة الإنتاج.
-
-## التحقق
-
-يحتوي المشروع على فحوص الأنواع والاختبارات الحالية. دعم إشعارات الدفع بالخلفية يتطلب إعداد APNs/مرسل موثوق؛ أما إشعارات التطبيق الداخلية فتظهر داخل واجهة moadbook.
+إعداد العميل يطابق مشروع moadbook الحالي. لا يحتوي الموقع على مفاتيح إدارية، ولا تُرفع قواعد Firebase المقترحة أو تُنشر ضمن Workflow. قد تتطلب بعض الميزات سماح قواعد RTDB الحية؛ لم تُعدّل قاعدة الإنتاج ضمن هذا التحديث.
