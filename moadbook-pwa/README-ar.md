@@ -43,3 +43,13 @@ node --check post-export.js
 node --check sw.js
 python3 -m json.tool manifest.webmanifest >/dev/null
 ```
+
+
+## تسجيل الدخول بحساب Google
+
+تتيح شاشة الدخول/الحساب الجديد الآن المتابعة بحساب Google عبر Firebase Authentication، ثم تحفظ Firebase ID/refresh tokens في جلسة moadbook الحالية. عند أول استخدام ينشأ حساب Firebase/ملف moadbook مستقل؛ يُستخدم الاسم والصورة العامة من Google، واسم مستخدم تلقائي. لا يدمج التطبيق تلقائيًا الحسابات القديمة التي دخلت باسم المستخدم وكلمة المرور؛ استخدم طريقة الدخول الأصلية لاستعادة تلك الملفات.
+
+للتشغيل، فعّل Google في Firebase Authentication، وحدد بريد دعم المشروع إن طلبه Firebase، وأضف النطاق `ansbnabwsby-hue.github.io` في Authentication > Settings > Authorized domains. تسجيل الدخول يفتح نافذة Google؛ إذا منعها المتصفح، اسمح بالنوافذ المنبثقة لهذا الموقع. لا تغيّر قواعد RTDB لهذه الميزة. لم يُختبر تسجيل OAuth بحساب إنتاج كي لا يُنشأ مستخدم تجريبي على قاعدة البيانات المشتركة؛ يظل الاختبار النهائي بفتح الموقع والضغط على زر Google.
+
+
+تنفيذ Google Auth يتبع [دليل Firebase الرسمي لتسجيل الدخول بـGoogle للويب](https://firebase.google.com/docs/auth/web/google-signin) و[مرجع REST لطريقة accounts:signInWithIdp](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential).
