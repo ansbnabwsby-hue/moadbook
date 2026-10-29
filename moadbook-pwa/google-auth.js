@@ -35,12 +35,24 @@
     try {
       const result = await auth.signInWithPopup(provider);
       const credential = window.firebase.auth.GoogleAuthProvider.credentialFromResult(result);
+      const tokenResponse = result?._tokenResponse || result?.user?._tokenResponse || {};
+      const returnedCredential = result?.credential || {};
       const postBody = new URLSearchParams({ providerId: 'google.com' });
-      if (credential?.idToken) postBody.set('id_token', credential.idToken);
-      else if (credential?.accessToken) postBody.set('access_token', credential.accessToken);
+      const oauthIdToken = credential?.idToken || returnedCredential.idToken || tokenResponse.oauthIdToken;
+      const oauthAccessToken = credential?.accessToken || returnedCredential.accessToken || tokenResponse.oauthAccessToken;
+      if (oauthIdToken) postBody.set('id_token', oauthIdToken);
+      else if (oauthAccessToken) postBody.set('access_token', oauthAccessToken);
       else {
         const error = new Error('GOOGLE_CREDENTIAL_MISSING');
         error.code = 'GOOGLE_CREDENTIAL_MISSING';
+        error.credentialDiagnostics = {
+          credentialObject: Boolean(credential),
+          resultCredential: Boolean(result?.credential),
+          oauthIdToken: Boolean(tokenResponse.oauthIdToken),
+          oauthAccessToken: Boolean(tokenResponse.oauthAccessToken),
+          userPresent: Boolean(result?.user),
+        };
+        console.warn('Google OAuth returned no provider credential', error.credentialDiagnostics);
         throw error;
       }
 
