@@ -252,3 +252,13 @@ html.dark-mode .reply-quote,html.dark-mode .comment-reply-preview,html.dark-mode
 html.dark-mode .account-settings-launcher,html.dark-mode .settings-back-button,html.dark-mode .settings-card,html.dark-mode .settings-about-card{background:var(--card);border-color:#39364f;color:var(--text)}html.dark-mode .settings-hero{background:linear-gradient(120deg,#24243a,#292339);border-color:#39364f}html.dark-mode .settings-logout{background:#34242f;border-color:#613642;color:#ffb7c4}html.dark-mode .account-settings-chevron{color:#c1b9ff}
 @media(max-width:480px){.account-page-heading{grid-template-columns:1fr;gap:10px;align-items:stretch}.account-settings-launcher{width:100%;min-height:60px}.account-page-heading .section-title,.settings-page-heading .section-title{font-size:20px}.settings-hero{align-items:flex-start;padding:14px}.settings-card{padding:14px}}
 @media(prefers-reduced-motion:reduce){.account-settings-launcher{transition:none}}
+
+/* Full-screen private chat: use the whole phone viewport for focused conversations. */
+body.chat-fullscreen{overflow:hidden}
+body.chat-fullscreen .topbar,body.chat-fullscreen .bottom-nav{display:none}
+body.chat-fullscreen .main-wrap{width:100%;max-width:none;padding:0}
+body.chat-fullscreen #page-messages>.section-title,body.chat-fullscreen #page-messages>.section-subtitle,body.chat-fullscreen #chatList{display:none!important}
+body.chat-fullscreen #page-messages{display:block;min-height:100dvh}
+body.chat-fullscreen #chatWindow{position:fixed;inset:0;z-index:30;width:100%;height:100dvh;min-height:0;max-height:none;margin:0;border:0;border-radius:0!important;padding:calc(10px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important;background:var(--card);box-shadow:none}
+body.chat-fullscreen #chatMessages{min-height:0}
+body.chat-fullscreen .chat-toolbar{padding-top:2px}
