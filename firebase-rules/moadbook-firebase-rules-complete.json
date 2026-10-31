@@ -661,6 +661,115 @@
         ".write": "auth != null && auth.uid === $uid && (!newData.exists() || (newData.isNumber() && newData.val() >= now - 60000 && newData.val() <= now + 60000))",
         ".validate": "newData.isNumber() && newData.val() >= now - 60000 && newData.val() <= now + 60000"
       }
+    },
+    "calls": {
+      "$callId": {
+        ".read": "auth != null && (data.child('callerId').val() === auth.uid || data.child('recipientId').val() === auth.uid)",
+        ".write": "auth != null && ((!data.exists() && newData.child('callerId').val() === auth.uid && newData.child('recipientId').val() !== auth.uid) || (data.exists() && (data.child('callerId').val() === auth.uid || data.child('recipientId').val() === auth.uid) && newData.child('callerId').val() === data.child('callerId').val() && newData.child('recipientId').val() === data.child('recipientId').val() && newData.child('roomName').val() === data.child('roomName').val()))",
+        ".validate": "newData.hasChildren(['callerId','recipientId','conversationId','type','roomName','status','createdAt']) && newData.child('callerId').isString() && newData.child('recipientId').isString() && newData.child('conversationId').isString() && newData.child('type').val().matches(/^(audio|video)$/) && newData.child('roomName').isString() && newData.child('roomName').val().matches(/^moadbook-[a-z0-9-]{20,80}$/) && newData.child('status').val().matches(/^(ringing|accepted|declined|ended|missed)$/) && newData.child('createdAt').isNumber()",
+        "$other": {
+          ".validate": false
+        },
+        "id": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "callerId": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "recipientId": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "conversationId": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "type": {
+          ".validate": "newData.val().matches(/^(audio|video)$/)"
+        },
+        "roomName": {
+          ".validate": "newData.isString() && newData.val().matches(/^moadbook-[a-z0-9-]{20,80}$/)"
+        },
+        "status": {
+          ".validate": "newData.val().matches(/^(ringing|accepted|declined|ended|missed)$/)"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "acceptedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "startedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "endedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "callerName": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "recipientName": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        }
+      }
+    },
+    "callInvites": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$callId": {
+          ".write": "auth != null && ((!data.exists() && auth.uid === newData.child('callerId').val() && $uid === newData.child('recipientId').val()) || (data.exists() && (auth.uid === $uid || auth.uid === data.child('callerId').val()) && newData.child('recipientId').val() === $uid))",
+          ".validate": "newData.hasChildren(['callerId','recipientId','conversationId','type','roomName','status','createdAt']) && newData.child('callerId').isString() && newData.child('recipientId').val() === $uid && newData.child('conversationId').isString() && newData.child('type').val().matches(/^(audio|video)$/) && newData.child('roomName').isString() && newData.child('roomName').val().matches(/^moadbook-[a-z0-9-]{20,80}$/) && newData.child('status').val().matches(/^(ringing|accepted|declined|ended|missed)$/) && newData.child('createdAt').isNumber()",
+          "$other": {
+            ".validate": false
+          },
+          "id": {
+            ".validate": "newData.isString() && newData.val().length <= 128"
+          },
+          "callerId": {
+            ".validate": "newData.isString() && newData.val().length <= 128"
+          },
+          "recipientId": {
+            ".validate": "newData.isString() && newData.val().length <= 128"
+          },
+          "conversationId": {
+            ".validate": "newData.isString() && newData.val().length <= 128"
+          },
+          "type": {
+            ".validate": "newData.val().matches(/^(audio|video)$/)"
+          },
+          "roomName": {
+            ".validate": "newData.isString() && newData.val().matches(/^moadbook-[a-z0-9-]{20,80}$/)"
+          },
+          "status": {
+            ".validate": "newData.val().matches(/^(ringing|accepted|declined|ended|missed)$/)"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "acceptedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "startedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "endedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "callerName": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "recipientName": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          }
+        }
+      }
+    },
+    "callIndex": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$callId": {
+          ".write": "auth != null && auth.uid === $uid && newData.val() === true && (root.child('calls').child($callId).child('callerId').val() === auth.uid || root.child('calls').child($callId).child('recipientId').val() === auth.uid)",
+          ".validate": "newData.val() === true"
+        }
+      }
     }
   }
 }
