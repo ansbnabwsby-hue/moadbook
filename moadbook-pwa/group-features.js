@@ -338,7 +338,7 @@
       actions.append(button('مغادرة المجموعة', 'btn light', async () => {
         if (!window.confirm('مغادرة هذه المجموعة؟')) return;
         try { await app.dbDelete(`/groupMembers/${groupId}/${uid}`); app.toast('غادرت المجموعة'); await loadGroupDetail(groupId); }
-        catch (error) { app.toast('تعذر مغادرة المجموعة. تحقق من قواعد RTDB.'); console.warn('group leave', error.firebaseCode || error.message); }
+        catch (error) { app.toast('تعذر مغادرة المجموعة الآن. تحقق من اتصال الإنترنت وحاول مجددًا.'); console.warn('group leave', error.firebaseCode || error.message); }
       }));
     } else {
       actions.append(make('span', 'group-owner-badge', 'أنت مالك المجموعة'));
@@ -453,7 +453,7 @@
         app.toast('تم تحديث صورة المجموعة');
         await loadGroupDetail(groupId);
       } catch (error) {
-        app.toast(error.firebaseCode?.includes('PERMISSION_DENIED') ? 'تحتاج القواعد المحدّثة لحفظ صورة المجموعة.' : 'تعذر ضغط الصورة أو رفعها. جرّب صورة أصغر.');
+        app.toast(error.firebaseCode?.includes('PERMISSION_DENIED') ? 'تعذر حفظ صورة المجموعة الآن. حاول مجددًا لاحقًا.' : 'تعذر ضغط الصورة أو رفعها. جرّب صورة أصغر.');
         console.warn('group media upload', error.firebaseCode || error.message);
       } finally { choose.disabled = false; }
     });
