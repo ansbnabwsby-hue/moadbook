@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "moadbook-pwa-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v22`;
+const CACHE_NAME = `${CACHE_PREFIX}v23`;
 const APP_ROOT = new URL("./", self.registration.scope);
 const SCOPE_PATH = APP_ROOT.pathname;
 const SHELL_URLS = [
@@ -14,6 +14,7 @@ const SHELL_URLS = [
   new URL("./group-features.js", APP_ROOT).href,
   new URL("./post-export.js", APP_ROOT).href,
   new URL("./firebase-config.js", APP_ROOT).href,
+  new URL("./supabase-config.js", APP_ROOT).href,
   new URL("./google-auth.js", APP_ROOT).href,
 ];
 
