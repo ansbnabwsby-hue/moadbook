@@ -8,7 +8,7 @@
         ".write": "auth != null && auth.uid === $uid && newData.child('verified').val() === data.child('verified').val()",
         ".validate": "newData.hasChildren(['username', 'displayName', 'bio', 'createdAt'])",
         "username": {
-          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{3,24}$/) && auth.token.email === newData.val() + '@accounts.example.com' && (!data.exists() || newData.val() === data.val())"
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9_]{3,24}$/) && (auth.token.firebase.sign_in_provider === 'google.com' || auth.token.email === newData.val() + '@accounts.example.com') && (!data.exists() || newData.val() === data.val())"
         },
         "displayName": {
           ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 60"
