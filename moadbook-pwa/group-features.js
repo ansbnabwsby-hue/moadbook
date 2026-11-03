@@ -128,7 +128,7 @@
       memberships = membersData || {};
       renderCommunityDirectory();
     } catch (error) {
-      box.replaceChildren(app.emptyCard('تعذر تحميل المجتمعات', 'تحقق من اتصال Firebase وقواعد RTDB ثم حاول مجددًا.'));
+      box.replaceChildren(app.emptyCard('تعذر تحميل المجتمعات', 'تعذر تحميل المجتمعات الآن. تحقق من اتصال الإنترنت وحاول مجددًا.'));
       console.warn('groups directory', error.firebaseCode || error.message);
     }
   }
@@ -190,7 +190,7 @@
           app.toast(group.joined ? 'غادرت المجموعة' : 'انضممت إلى المجموعة');
           await loadGroups();
         } catch (error) {
-          app.toast('تعذر تحديث العضوية. طبّق قواعد RTDB المحدّثة ثم حاول مجددًا.');
+          app.toast('تعذر تحديث العضوية. تعذر تنفيذ العملية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
           console.warn('group join/leave', error.firebaseCode || error.message);
         } finally {
           join.disabled = false;
@@ -238,7 +238,7 @@
       await loadGroups();
       await openGroup(groupId);
     } catch (error) {
-      app.status('groupStatus', 'تعذر إنشاء المجموعة أو تثبيت عضوية المالك. تأكد من تطبيق ملف قواعد RTDB المحدّث ثم حاول مجددًا.', 'error');
+      app.status('groupStatus', 'تعذر إنشاء المجموعة الآن. تحقق من اتصال الإنترنت وحاول مجددًا.', 'error');
       console.warn('create group', error.firebaseCode || error.message);
       if (groupId) await app.dbDelete(`/groups/${groupId}`).catch(() => {});
     } finally {
@@ -292,7 +292,7 @@
       renderGroupDetail(groupId, group, members || {}, rows, events || {}, rsvps || {}, profiles || {}, media, liked);
     } catch (error) {
       if (activeGroupId !== groupId || requestId !== groupLoadRequestId || app.currentPage() !== 'groups') return;
-      view.replaceChildren(app.emptyCard('تعذر فتح المجموعة', 'تأكد من اتصالك ومن تطبيق قواعد RTDB المحدّثة.'));
+      view.replaceChildren(app.emptyCard('تعذر فتح المجموعة', 'تحقق من اتصال الإنترنت وحاول مجددًا.'));
       console.warn('group detail', error.firebaseCode || error.message);
     }
   }
@@ -331,7 +331,7 @@
         const target = event.currentTarget;
         target.disabled = true;
         try { await app.dbPut(`/groupMembers/${groupId}/${uid}`, 'member'); app.toast('انضممت إلى المجموعة'); await loadGroupDetail(groupId); }
-        catch (error) { app.toast('تعذر الانضمام؛ طبّق قواعد RTDB المحدّثة أولًا.'); console.warn('group join', error.firebaseCode || error.message); }
+        catch (error) { app.toast('تعذر الانضمام؛ تعذر تنفيذ العملية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.'); console.warn('group join', error.firebaseCode || error.message); }
         finally { target.disabled = false; }
       }));
     } else if (role !== 'owner') {
@@ -414,7 +414,7 @@
         app.toast('تم تحديث إعدادات المجموعة');
         await loadGroupDetail(groupId);
       } catch (error) {
-        app.toast('تعذر الحفظ. طبّق ملف قواعد RTDB المحدث ثم أعد المحاولة.');
+        app.toast('تعذر الحفظ الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
         console.warn('group settings', error.firebaseCode || error.message);
       } finally { target.disabled = false; }
     });
@@ -522,7 +522,7 @@
         editingEventId = '';
         await loadGroupDetail(groupId);
       } catch (error) {
-        app.toast('تعذر حفظ الفعالية. طبّق قواعد RTDB المحدّثة ثم حاول.');
+        app.toast('تعذر حفظ الفعالية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
         console.warn('group event save', error.firebaseCode || error.message);
       } finally { submit.disabled = false; }
     });
@@ -568,7 +568,7 @@
             app.toast('تم إلغاء الفعالية');
             await loadGroupDetail(groupId);
           } catch (error) {
-            app.toast('تعذر إلغاء الفعالية. تحقق من قواعد RTDB.');
+            app.toast('تعذر إلغاء الفعالية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
             console.warn('group event cancel', error.firebaseCode || error.message);
           }
         }));
@@ -594,7 +594,7 @@
               await app.dbPut(`/groupEventRsvps/${groupId}/${row.id}/${currentUid()}`, { status: value, updatedAt: Date.now() });
               await loadGroupDetail(groupId);
             } catch (error) {
-              app.toast('تعذر تسجيل الحضور. طبّق قواعد RTDB المحدّثة أولًا.');
+              app.toast('تعذر تسجيل الحضور. تعذر تنفيذ العملية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
               console.warn('group RSVP', error.firebaseCode || error.message);
             } finally { target.disabled = false; }
           });
@@ -641,7 +641,7 @@
             app.toast(role === 'admin' ? 'تمت إزالة دور المشرف' : 'تم تعيين مشرف للمجموعة');
             await loadGroupDetail(groupId);
           } catch (error) {
-            app.toast('تعذر تحديث الدور. طبّق قواعد RTDB المحدّثة.');
+            app.toast('تعذر تحديث الدور. تعذر تنفيذ العملية الآن. تحقق من اتصال الإنترنت وحاول مجددًا.');
             console.warn('group role update', error.firebaseCode || error.message);
           }
         }));

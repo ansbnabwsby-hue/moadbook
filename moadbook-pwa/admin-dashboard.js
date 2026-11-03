@@ -238,7 +238,7 @@
   function renderReports() {
     const box = documentRef.getElementById('adminReportsList');
     if (!state.reportsAvailable) {
-      box.replaceChildren(app.emptyCard('فعّل قواعد الإشراف أولًا', 'راجع ملفات قواعد Firebase المرفقة؛ تبقى القاعدة بدون تغيير حتى تطبقها يدويًا.'));
+      box.replaceChildren(app.emptyCard('تعذر تحميل أدوات الإشراف الآن', 'تحقق من اتصال الإنترنت ثم حاول مجددًا.'));
       return;
     }
     const rows = Object.entries(state.reports || {}).flatMap(([reporterId, reports]) =>
@@ -312,10 +312,10 @@
       renderPosts();
       renderReports();
       documentRef.getElementById('adminRefreshStamp').textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar')}${showMessage ? ' · تم التحديث' : ''}`;
-      status(state.reportsAvailable ? '' : 'الإحصاءات جاهزة؛ لتفعيل الحذف والتوثيق ومراجعة البلاغات حدّث قواعد Firebase يدويًا بالملف المرفق.', state.reportsAvailable ? '' : '');
+      status(state.reportsAvailable ? '' : 'الإحصاءات جاهزة، وبعض أدوات الإدارة غير متاحة حاليًا.', state.reportsAvailable ? '' : '');
     } catch (error) {
       console.warn('admin dashboard', error?.firebaseCode || error?.message);
-      status('تعذر تحميل لوحة الإدارة. حدّث قواعد Firebase باستخدام ملف القواعد المرفق، ثم سجّل الخروج والدخول.', 'error');
+      status('تعذر تحميل لوحة الإدارة الآن. تحقق من اتصال الإنترنت ثم حاول مجددًا.', 'error');
     } finally {
       state.refreshing = false;
       refreshButton.disabled = false;
@@ -336,7 +336,7 @@
       status(nextValue ? 'تم توثيق الحساب بالعلامة الزرقاء.' : 'تم إلغاء توثيق الحساب.', 'ok');
     } catch (error) {
       console.warn('verify user', error?.firebaseCode || error?.message);
-      status('رفضت قواعد Firebase التوثيق. تأكد من نشر ملف القواعد المرفق يدويًا.', 'error');
+      status('تعذر تنفيذ التوثيق الآن. تحقق من صلاحيات الحساب ثم حاول مجددًا.', 'error');
     }
   }
 
@@ -357,7 +357,7 @@
       status('حُذف المنشور وبياناته المرتبطة.', 'ok');
     } catch (error) {
       console.warn('admin delete post', error?.firebaseCode || error?.message);
-      status('تعذر إكمال الحذف. تحقّق من قواعد Firebase؛ إذا فشل الحذف جزئيًا، أعد المحاولة بعد تحديث القواعد.', 'error');
+      status('تعذر إكمال الحذف الآن. حاول مجددًا بعد لحظات.', 'error');
       void loadDashboard();
     }
   }
