@@ -144,6 +144,13 @@ function isImageMediaUrl(value){
 function setChatFullscreen(active){document.body.classList.toggle('chat-fullscreen',!!active)}
 function isVideoMediaUrl(value){try{const u=new URL(String(value||''));if(u.protocol!=='https:')return false;const host=u.hostname.toLowerCase(),path=u.pathname;if(/\.(mp4|m4v|webm|ogg)$/i.test(path))return true;if(['youtu.be','youtube.com','www.youtube.com','m.youtube.com','music.youtube.com','youtube-nocookie.com','www.youtube-nocookie.com'].includes(host)){const p=path.split('/').filter(Boolean);return !!(u.searchParams.get('v')||u.searchParams.get('list')||(host==='youtu.be'&&p[0])||(['shorts','live','embed','v'].includes(p[0])&&p[1]))}if(host==='tiktok.com'||host.endsWith('.tiktok.com'))return true;if(host==='facebook.com'||host.endsWith('.facebook.com')||host==='fb.watch')return true;if(host==='instagram.com'||host.endsWith('.instagram.com')||host==='instagr.am')return true;if(['vimeo.com','www.vimeo.com','player.vimeo.com','dailymotion.com','www.dailymotion.com','dai.ly'].includes(host))return true;return false}catch{return false}}
 function makeVideoOpenLink(raw,platform){const a=document.createElement('a');a.href=raw;a.className='inline-btn video-open';a.textContent=`فتح في ${platform}`;a.rel='noopener noreferrer';a.target='_blank';a.onclick=e=>{if(window.MoadbookSecureStore?.openExternal){e.preventDefault();window.MoadbookSecureStore.openExternal(raw)}};return a}
+function applyVideoAspect(video){
+ if(!video||!video.videoWidth||!video.videoHeight)return;
+ const portrait=video.videoHeight>video.videoWidth;
+ video.classList.toggle('video-portrait',portrait);
+ video.classList.toggle('video-landscape',!portrait);
+ video.style.aspectRatio=`${video.videoWidth} / ${video.videoHeight}`;
+}
 function renderVideo(value,container){
  const raw=httpsUrl(value);if(!raw){container.append(Object.assign(document.createElement('div'),{className:'media-loading',textContent:'رابط الفيديو غير صالح'}));return}
  container.classList.add('video-panel');let embed='',title='معاينة فيديو',platform='الرابط الأصلي',youtubeId='';
@@ -174,7 +181,7 @@ function renderVideo(value,container){
   const note=document.createElement('div');note.className='video-note';note.textContent=`تُعرض المعاينة من ${platform}. إذا منع الموقع التضمين أو طلب تسجيل دخول، افتح الفيديو من الزر.`;container.append(note);container.append(makeVideoOpenLink(raw,platform));return;
  }
  if(/\.(mp4|m4v|webm|ogg)(\?|#|$)/i.test(raw)){
-  platform='ملف فيديو';const video=document.createElement('video');video.className='video-direct';video.controls=true;video.preload='metadata';video.playsInline=true;video.setAttribute('playsinline','');video.src=raw;
+  platform='ملف فيديو';const video=document.createElement('video');video.className='video-direct';video.controls=true;video.preload='metadata';video.playsInline=true;video.setAttribute('playsinline','');video.addEventListener('loadedmetadata',()=>applyVideoAspect(video),{once:true});video.src=raw;
   video.onerror=()=>{container.replaceChildren();const msg=document.createElement('div');msg.className='video-error';msg.textContent='تعذّر تشغيل ملف الفيديو من الرابط؛ قد لا يكون رابط ملف مباشرًا أو قد يتطلب صلاحية.';container.append(msg,makeVideoOpenLink(raw,platform))};container.append(video);return;
  }
  const card=document.createElement('div');card.className='video-fallback-card';const titleEl=document.createElement('strong');titleEl.textContent=title;const desc=document.createElement('span');desc.textContent=`لا تسمح هذه المنصة بمعاينة مضمونة داخل التطبيق؛ يمكنك فتح الفيديو في ${platform}.`;card.append(titleEl,desc);container.append(card,makeVideoOpenLink(raw,platform));
@@ -340,7 +347,7 @@ async function preparePostVideo(file){
  if(file.size>50*1024*1024){status('postStatus','حجم الفيديو يتجاوز الحد المجاني 50MB.','error');return}
  pendingPostVideo=file;
  const box=$('postMediaPreview');box.replaceChildren();box.classList.remove('hidden');
- const video=document.createElement('video');video.controls=true;video.muted=true;video.playsInline=true;video.preload='metadata';video.src=URL.createObjectURL(file);
+ const video=document.createElement('video');video.className='video-direct';video.controls=true;video.muted=true;video.playsInline=true;video.preload='metadata';video.addEventListener('loadedmetadata',()=>applyVideoAspect(video),{once:true});video.src=URL.createObjectURL(file);
  const note=document.createElement('span');note.className='media-loading';note.textContent=`فيديو جاهز للرفع · ${Math.ceil(file.size/1024/1024)}MB`;
  const remove=document.createElement('button');remove.className='preview-remove';remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','إزالة الفيديو');remove.onclick=clearPostMedia;box.append(video,note,remove);
  status('postStatus','الفيديو جاهز. سيُرفع إلى التخزين المجاني عند الضغط على نشر.','ok');
