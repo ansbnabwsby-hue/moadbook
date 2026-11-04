@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "moadbook",
+  "short_name": "moadbook",
+  "description": "مساحة عربية لمشاركة اللحظات والأفكار واكتشاف المجتمعات.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#5147d9",
+  "background_color": "#f4f6fb",
+  "icons": [
+    {
+      "src": "./moadbook-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
