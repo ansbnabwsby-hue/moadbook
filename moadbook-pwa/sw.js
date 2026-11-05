@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "moadbook-pwa-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v37`;
+const CACHE_NAME = `${CACHE_PREFIX}v38`;
 const APP_ROOT = new URL("./", self.registration.scope);
 const SCOPE_PATH = APP_ROOT.pathname;
 const SHELL_URLS = [
@@ -7,12 +7,12 @@ const SHELL_URLS = [
   new URL("./index.html", APP_ROOT).href,
   new URL("./manifest.webmanifest", APP_ROOT).href,
   new URL("./moadbook-icon.png", APP_ROOT).href,
-  new URL("./styles.css?v=37", APP_ROOT).href,
-  new URL("./admin.css?v=37", APP_ROOT).href,
-  new URL("./app.js?v=37", APP_ROOT).href,
-  new URL("./admin-dashboard.js?v=37", APP_ROOT).href,
-  new URL("./group-features.js?v=37", APP_ROOT).href,
-  new URL("./post-export.js?v=37", APP_ROOT).href,
+  new URL("./styles.css?v=38", APP_ROOT).href,
+  new URL("./admin.css?v=38", APP_ROOT).href,
+  new URL("./app.js?v=38", APP_ROOT).href,
+  new URL("./admin-dashboard.js?v=38", APP_ROOT).href,
+  new URL("./group-features.js?v=38", APP_ROOT).href,
+  new URL("./post-export.js?v=38", APP_ROOT).href,
   new URL("./firebase-config.js", APP_ROOT).href,
   new URL("./supabase-config.js", APP_ROOT).href,
   new URL("./google-auth.js", APP_ROOT).href,
