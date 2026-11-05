@@ -364,3 +364,39 @@ body.mills-fullscreen .page.active{display:block!important;animation:none!import
 .dark-mode .public-chat-join{background:linear-gradient(145deg,#292647,var(--card))}
 .dark-mode .public-chat-actions .danger{color:#ffabb9}
 @media(max-width:520px){.public-chat-toolbar{align-items:flex-start;flex-direction:column}.public-chat-actions{width:100%;justify-content:stretch}.public-chat-actions .btn{flex:1}.public-chat-messages{max-height:55vh;min-height:230px}.public-chat-compose .btn{min-width:62px}}
+
+/* Public mobok chat polish */
+#page-groups{padding-bottom:8px}
+#page-groups .public-chat-hero{position:relative;min-height:148px;margin:-2px -2px 14px;padding:22px 19px;border:1px solid #e3e2fa;border-radius:26px;overflow:hidden;box-shadow:0 12px 30px #5147d914}
+#page-groups .public-chat-hero::after{content:'م';position:absolute;left:-12px;bottom:-34px;width:138px;height:138px;border-radius:50%;display:grid;place-items:center;background:#5147d91a;color:#5147d933;font-size:105px;font-weight:950;transform:rotate(-12deg);pointer-events:none}
+#page-groups .public-chat-hero>div{position:relative;z-index:1}
+#page-groups .public-chat-hero .section-title{font-size:26px;margin:8px 0 5px;color:#262044}
+#page-groups .public-chat-hero .section-subtitle{max-width:38ch;margin:0;color:#625e7d}
+#page-groups .public-chat-hero .community-orb{position:absolute;z-index:1;top:18px;left:18px;width:48px;height:48px;border-radius:17px;display:grid;place-items:center;background:#ffffffaa;border:1px solid #ffffff;color:var(--accent);font-size:27px;box-shadow:0 8px 20px #5147d91f}
+#page-groups .public-chat-join{padding:19px;border-radius:22px;box-shadow:0 8px 25px #27234a0a}
+#page-groups .public-chat-join strong{font-size:16px}
+#page-groups .public-chat-join .btn{height:46px;border-radius:15px}
+#page-groups .public-chat-panel{padding:0;border-radius:24px;background:var(--card);box-shadow:0 10px 35px #27234a12}
+#page-groups .public-chat-toolbar{padding:17px 16px 14px;background:linear-gradient(110deg,#faf9ff,#fff8fc);border-bottom:1px solid #eceaf6}
+#page-groups .public-chat-toolbar>div:first-child{display:flex;align-items:center;gap:10px}
+#page-groups .public-chat-toolbar>div:first-child::before{content:'م';display:grid;place-items:center;width:43px;height:43px;border-radius:15px;background:linear-gradient(135deg,#5147d9,#9e50d8);color:#fff;font-size:20px;font-weight:900;box-shadow:0 7px 16px #5147d933}
+#page-groups .public-chat-toolbar strong{font-size:16px}
+#page-groups .public-chat-actions .btn{border-radius:11px;background:#f1effa}
+#page-groups .public-chat-actions .danger{background:#fff0f3}
+#page-groups .public-chat-messages{min-height:390px;max-height:calc(100vh - 390px);padding:18px 14px;background:linear-gradient(180deg,#fbfbff,#f7f8fc)}
+#page-groups .public-chat-message{position:relative;max-width:84%;padding:10px 13px;border:0;border-radius:18px 18px 18px 5px;background:#fff;box-shadow:0 5px 16px #2e2a5a0d}
+#page-groups .public-chat-message.mine{border:0;border-radius:18px 18px 5px 18px;background:linear-gradient(135deg,#564bd7,#7951d4);box-shadow:0 7px 18px #5147d936}
+#page-groups .public-chat-message-author{font-size:10px;letter-spacing:.1px}
+#page-groups .public-chat-message-body{font-size:13px;line-height:1.8}
+#page-groups .public-chat-message-meta{font-size:9px;text-align:end}
+#page-groups .public-chat-compose{padding:11px 12px 12px;background:var(--card);border-top:1px solid #eceaf6}
+#page-groups .public-chat-compose .chat-input{min-height:44px;padding:11px 13px;border-radius:15px;background:#f7f7fc}
+#page-groups .public-chat-compose .btn{height:44px;border-radius:14px;box-shadow:0 6px 14px #5147d92d}
+#page-groups .public-chat-notification-status{padding:8px 16px 0;background:#fff;color:#7b7892}
+.dark-mode #page-groups .public-chat-hero .section-title{color:#fff}
+.dark-mode #page-groups .public-chat-hero .section-subtitle{color:#d1cde5}
+.dark-mode #page-groups .public-chat-toolbar{background:linear-gradient(110deg,#292743,#322434);border-color:#46415c}
+.dark-mode #page-groups .public-chat-messages{background:linear-gradient(180deg,#201e32,#242236)}
+.dark-mode #page-groups .public-chat-message{background:#302e45;box-shadow:none}
+.dark-mode #page-groups .public-chat-notification-status{background:var(--card)}
+@media(max-width:520px){#page-groups .public-chat-hero{min-height:140px;padding:19px 16px}#page-groups .public-chat-hero .section-title{font-size:23px}#page-groups .public-chat-hero .community-orb{left:14px;top:14px}#page-groups .public-chat-messages{min-height:calc(100vh - 430px);max-height:calc(100vh - 430px);padding-inline:10px}}
