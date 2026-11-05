@@ -400,3 +400,8 @@ body.mills-fullscreen .page.active{display:block!important;animation:none!import
 .dark-mode #page-groups .public-chat-message{background:#302e45;box-shadow:none}
 .dark-mode #page-groups .public-chat-notification-status{background:var(--card)}
 @media(max-width:520px){#page-groups .public-chat-hero{min-height:140px;padding:19px 16px}#page-groups .public-chat-hero .section-title{font-size:23px}#page-groups .public-chat-hero .community-orb{left:14px;top:14px}#page-groups .public-chat-messages{min-height:calc(100vh - 430px);max-height:calc(100vh - 430px);padding-inline:10px}}
+
+.swatches{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.swatch{width:32px;height:32px;flex:0 0 32px;transition:transform .18s,box-shadow .18s}
+.swatch:hover,.swatch:focus-visible{transform:scale(1.12);box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--accent)}
+.swatch[data-color="#8b5cf6"]{background:#8b5cf6}.swatch[data-color="#0f766e"]{background:#0f766e}.swatch[data-color="#be123c"]{background:#be123c}.swatch[data-color="#b45309"]{background:#b45309}.swatch[data-color="#334155"]{background:#334155}
