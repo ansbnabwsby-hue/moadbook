@@ -435,3 +435,11 @@ body.public-chat-fullscreen #page-groups .public-chat-compose{padding-bottom:cal
 
 body.public-chat-fullscreen:not(.public-chat-joined) #page-groups .public-chat-hero{display:block;margin:0;border-radius:0;min-height:190px}
 body.public-chat-fullscreen:not(.public-chat-joined) #page-groups .public-chat-join{display:block;margin:0;border:0;border-radius:0;min-height:calc(100vh - 190px);padding:24px 18px}
+/* Minimal full-screen mobok chat */
+body.public-chat-fullscreen #page-groups #publicChatMemberStatus,
+body.public-chat-fullscreen #page-groups .public-chat-notification-status{display:none}
+body.public-chat-fullscreen #page-groups .public-chat-toolbar>div:first-child{gap:0}
+body.public-chat-fullscreen #page-groups .public-chat-toolbar>div:first-child::before{width:38px;height:38px;border-radius:13px;font-size:17px}
+body.public-chat-fullscreen #page-groups .public-chat-toolbar strong{font-size:15px}
+body.public-chat-fullscreen #page-groups .public-chat-actions .btn{min-width:0;padding:7px 9px;font-size:10px}
+body.public-chat-fullscreen #page-groups #publicChatStatus{min-height:0;margin:0;padding:0 12px 5px;font-size:10px}
