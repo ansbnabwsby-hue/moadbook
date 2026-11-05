@@ -405,3 +405,33 @@ body.mills-fullscreen .page.active{display:block!important;animation:none!import
 .swatch{width:32px;height:32px;flex:0 0 32px;transition:transform .18s,box-shadow .18s}
 .swatch:hover,.swatch:focus-visible{transform:scale(1.12);box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--accent)}
 .swatch[data-color="#8b5cf6"]{background:#8b5cf6}.swatch[data-color="#0f766e"]{background:#0f766e}.swatch[data-color="#be123c"]{background:#be123c}.swatch[data-color="#b45309"]{background:#b45309}.swatch[data-color="#334155"]{background:#334155}
+
+/* Full-screen public chat and mobile settings fixes */
+body.public-chat-fullscreen .topbar,body.public-chat-fullscreen .bottom-nav{display:none}
+body.public-chat-fullscreen .app{padding-bottom:0}
+body.public-chat-fullscreen .main-wrap{width:100%;max-width:none;padding:0}
+body.public-chat-fullscreen #page-groups{min-height:100vh;padding:0;background:var(--bg)}
+body.public-chat-fullscreen #page-groups .public-chat-hero,body.public-chat-fullscreen #page-groups .public-chat-join{display:none}
+body.public-chat-fullscreen #page-groups .public-chat-panel{display:flex;flex-direction:column;height:100vh;min-height:100vh;border:0;border-radius:0;box-shadow:none}
+body.public-chat-fullscreen #page-groups .public-chat-toolbar{flex:none;padding:calc(12px + env(safe-area-inset-top)) 14px 12px}
+body.public-chat-fullscreen #page-groups .public-chat-messages{flex:1;min-height:0;max-height:none}
+body.public-chat-fullscreen #page-groups .public-chat-compose{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.public-chat-reply-preview{padding:8px 13px;border-inline-start:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card));color:var(--muted);font-size:11px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.public-chat-message-tools{display:flex;justify-content:flex-start;gap:5px;margin-top:7px;opacity:.82}
+.public-chat-message-action{border:0;border-radius:8px;padding:4px 7px;background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--accent);font-size:10px;font-weight:800}
+.public-chat-message-action.danger{color:#a9364e;background:#fff0f3}
+.public-chat-message.mine .public-chat-message-action{color:#fff;background:#ffffff24}
+.public-chat-reply-quote{margin-bottom:7px;padding:6px 8px;border-inline-start:3px solid var(--accent);border-radius:7px;background:#5147d912;color:var(--muted);font-size:10px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.public-chat-message.mine .public-chat-reply-quote{color:#eeeaff;background:#ffffff18;border-color:#ffffffaa}
+.settings-page,.settings-page *{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.settings-page .settings-hero{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.settings-page .settings-hero>div:last-child{min-width:0;flex:1}
+.settings-page .settings-hero strong,.settings-page .settings-card strong,.settings-page .settings-section-label{line-height:1.55;white-space:normal}
+.settings-page .settings-hero p,.settings-page .muted{white-space:normal;line-height:1.75}
+.settings-page .a11y-setting{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;line-height:1.6}
+.settings-page .a11y-setting>span{min-width:0;flex:1}
+.settings-page .a11y-setting .field{width:min(55%,220px);min-width:130px}
+@media(max-width:520px){.settings-page{padding-inline:0}.settings-page .settings-card,.settings-page .settings-hero{padding:14px;border-radius:18px}.settings-page .settings-hero{align-items:flex-start}.settings-page .a11y-setting{align-items:flex-start;flex-direction:column;gap:6px}.settings-page .a11y-setting .field{width:100%;min-width:0}.settings-page .setting-toggle{display:flex;align-items:flex-start;gap:8px;line-height:1.7}.public-chat-message-tools{opacity:1}}
+
+body.public-chat-fullscreen:not(.public-chat-joined) #page-groups .public-chat-hero{display:block;margin:0;border-radius:0;min-height:190px}
+body.public-chat-fullscreen:not(.public-chat-joined) #page-groups .public-chat-join{display:block;margin:0;border:0;border-radius:0;min-height:calc(100vh - 190px);padding:24px 18px}
