@@ -307,7 +307,7 @@
         ],
         "$messageId": {
           ".write": "auth != null && !root.child('blocks').child(root.child('conversations').child($conversationId).child('memberA').val()).child(root.child('conversations').child($conversationId).child('memberB').val()).exists() && !root.child('blocks').child(root.child('conversations').child($conversationId).child('memberB').val()).child(root.child('conversations').child($conversationId).child('memberA').val()).exists() && root.child('conversations').child($conversationId).exists() && ((!data.exists() && newData.child('authorId').val() === auth.uid && (root.child('conversations').child($conversationId).child('memberA').val() === auth.uid || root.child('conversations').child($conversationId).child('memberB').val() === auth.uid)) || (data.exists() && data.child('authorId').val() === auth.uid))",
-          ".validate": "newData.hasChildren(['authorId', 'authorName', 'body', 'createdAt']) && ((!newData.child('replyToId').exists() && !newData.child('replyToAuthorId').exists() && !newData.child('replyToAuthorName').exists() && !newData.child('replyToBody').exists() && !newData.child('replyToHasImage').exists()) || (newData.child('replyToId').isString() && newData.child('replyToAuthorId').isString() && newData.child('replyToAuthorName').isString() && newData.child('replyToBody').isString() && newData.child('replyToHasImage').isBoolean()))",
+          ".validate": "newData.hasChildren(['authorId', 'authorName', 'body', 'createdAt']) && ((!newData.child('audioUrl').exists() && !newData.child('audioPath').exists() && !newData.child('audioMimeType').exists() && !newData.child('audioDuration').exists() && !newData.child('audioName').exists()) || (newData.child('audioUrl').isString() && newData.child('audioPath').isString() && newData.child('audioMimeType').isString() && newData.child('audioDuration').isNumber() && newData.child('audioName').isString())) && ((!newData.child('replyToId').exists() && !newData.child('replyToAuthorId').exists() && !newData.child('replyToAuthorName').exists() && !newData.child('replyToBody').exists() && !newData.child('replyToHasImage').exists()) || (newData.child('replyToId').isString() && newData.child('replyToAuthorId').isString() && newData.child('replyToAuthorName').isString() && newData.child('replyToBody').isString() && newData.child('replyToHasImage').isBoolean()))",
           "authorId": {
             ".validate": "newData.isString() && (!data.exists() || newData.val() === data.val())"
           },
@@ -315,7 +315,7 @@
             ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
           },
           "body": {
-            ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val().length >= 1 || newData.parent().child('attachmentData').exists())"
+            ".validate": "newData.isString() && newData.val().length <= 2000 && (newData.val().length >= 1 || newData.parent().child('attachmentData').exists() || newData.parent().child('audioUrl').exists())"
           },
           "createdAt": {
             ".validate": "newData.isNumber() && (!data.exists() || newData.val() === data.val())"
@@ -346,6 +346,21 @@
           },
           "editedAt": {
             ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+          },
+          "audioUrl": {
+            ".validate": "newData.isString() && newData.val().length <= 2048 && newData.val().matches(/^https:\\/\\/suttmrgmxusyfjybnfek\\.supabase\\.co\\/storage\\/v1\\/object\\/public\\/moadbook-videos\\/users\\/[^\\/]{1,128}\\/audio\\/.{1,180}$/)"
+          },
+          "audioPath": {
+            ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().matches(/^users\\/[^\\/]{1,128}\\/audio\\/.{1,220}$/)"
+          },
+          "audioMimeType": {
+            ".validate": "newData.isString() && newData.val().matches(/^audio\\/(mpeg|mp3|wav|x-wav|mp4|m4a|aac|ogg|webm)$/)"
+          },
+          "audioDuration": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3600"
+          },
+          "audioName": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80"
           }
         }
       }

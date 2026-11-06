@@ -475,3 +475,11 @@ html.dark-mode body.public-chat-fullscreen #page-groups .public-chat-message-act
 html.dark-mode body.public-chat-fullscreen #page-groups .public-chat-compose{background:#1b1e30;border-color:#3b4058}
 html.dark-mode body.public-chat-fullscreen #page-groups .public-chat-compose .chat-input{background:#282d45;border-color:#505773;color:#fff}
 @media(max-width:520px){body.public-chat-fullscreen #page-groups .public-chat-messages{padding:14px 10px}body.public-chat-fullscreen #page-groups .public-chat-message{max-width:88%;padding:11px 12px}body.public-chat-fullscreen #page-groups .public-chat-compose{padding-inline:10px}body.public-chat-fullscreen #page-groups .public-chat-compose .btn{min-width:68px}}
+
+/* Audio messages and voice recording */
+.chat-audio-preview{display:flex;align-items:center;gap:8px;margin:8px 0;padding:9px 11px;border:1px solid #d9d4f4;border-radius:14px;background:#f7f5ff;color:var(--text)}
+.chat-audio-preview audio{width:min(100%,320px);height:34px;flex:1}.chat-audio-preview-label{font-size:11px;font-weight:800;color:var(--accent);white-space:nowrap}.chat-audio-remove{border:0;border-radius:9px;padding:6px 8px;background:#fff0f3;color:#a4324e;font:inherit;font-size:10px;font-weight:800;cursor:pointer}
+.chat-compose .audio-file-button,.chat-compose .chat-record-button{font-size:18px;line-height:1}.chat-record-button.recording{background:#a52f4d!important;color:#fff!important;animation:chatRecordPulse 1.2s ease-in-out infinite}.message-audio{display:grid;gap:4px;min-width:min(100%,270px);margin-top:5px}.message-audio audio{width:100%;height:38px}.message-audio-meta{font-size:10px;color:var(--muted);font-weight:750}.message-bubble.mine .message-audio-meta{color:#eeeaff}
+@keyframes chatRecordPulse{50%{transform:scale(1.08);box-shadow:0 0 0 5px #a52f4d22}}
+html.dark-mode .chat-audio-preview{background:#292743;border-color:#4d4770}.dark-mode .chat-audio-remove{background:#482632;color:#ffb7c3}.dark-mode .message-audio-meta{color:#c8c7d8}
+@media(max-width:520px){.chat-audio-preview{flex-wrap:wrap}.chat-audio-preview audio{order:3;flex-basis:100%;width:100%}.chat-audio-preview-label{flex:1}.chat-compose .chat-attach{min-width:36px;padding-inline:7px}}

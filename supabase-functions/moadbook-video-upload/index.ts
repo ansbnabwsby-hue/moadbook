@@ -1,0 +1,25 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
+import { decodeProtectedHeader, importX509, jwtVerify } from 'https://esm.sh/jose@5.10.0';
+
+const PROJECT_ID = 'moadbook';
+const BUCKET = 'moadbook-videos';
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+const MAX_AUDIO_BYTES = 15 * 1024 * 1024;
+const VIDEO_TYPES = new Set(['video/mp4', 'video/webm', 'video/quicktime', 'video/ogg', 'video/x-matroska']);
+const AUDIO_TYPES = new Set(['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/mp4', 'audio/m4a', 'audio/aac', 'audio/ogg', 'audio/webm']);
+const ORIGIN = 'https://ansbnabwsby-hue.github.io';
+const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+let certCache: { expiresAt: number; certs: Record<string, string> } | null = null;
+
+function corsHeaders(origin: string | null) {
+  const allowed = origin === ORIGIN || origin === 'http://localhost:3000' || origin === 'http://127.0.0.1:3000';
+  return {'Access-Control-Allow-Origin': allowed ? origin! : ORIGIN, 'Access-Control-Allow-Headers': 'authorization,content-type', 'Access-Control-Allow-Methods': 'POST,OPTIONS', 'Access-Control-Max-Age': '600', Vary: 'Origin'};
+}
+async function getFirebaseCerts() { if (certCache && certCache.expiresAt > Date.now()) return certCache.certs; const response = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'); if (!response.ok) throw new Error('firebase_certs_unavailable'); const certs = await response.json() as Record<string, string>; const maxAge = Number(response.headers.get('cache-control')?.match(/max-age=(\d+)/)?.[1] || 3600); certCache = {certs, expiresAt: Date.now() + Math.min(maxAge, 21600) * 1000}; return certs; }
+async function verifyFirebaseToken(token: string) { const header = decodeProtectedHeader(token); if (!header.kid || header.alg !== 'RS256') throw new Error('invalid_firebase_token'); const certs = await getFirebaseCerts(); const cert = certs[header.kid]; if (!cert) throw new Error('unknown_firebase_key'); const key = await importX509(cert, 'RS256'); const verified = await jwtVerify(token, key, {issuer: `https://securetoken.google.com/${PROJECT_ID}`, audience: PROJECT_ID}); if (typeof verified.payload.sub !== 'string' || verified.payload.sub.length < 1) throw new Error('invalid_firebase_subject'); return verified.payload; }
+function extensionFor(contentType: string, kind: string) { const map: Record<string, string> = {'video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov','video/ogg':'ogv','video/x-matroska':'mkv','audio/mpeg':'mp3','audio/mp3':'mp3','audio/wav':'wav','audio/x-wav':'wav','audio/mp4':'m4a','audio/m4a':'m4a','audio/aac':'aac','audio/ogg':'ogg','audio/webm':'webm'}; return map[contentType] || (kind === 'audio' ? 'audio' : 'bin'); }
+Deno.serve(async (req) => {
+  const headers = corsHeaders(req.headers.get('origin')); if (req.method === 'OPTIONS') return new Response(null, {status:204, headers}); if (req.method !== 'POST') return new Response(JSON.stringify({error:'method_not_allowed'}), {status:405, headers:{...headers,'Content-Type':'application/json'}});
+  try { const auth = req.headers.get('authorization') || ''; if (!auth.startsWith('Bearer ')) throw new Error('auth_required'); const user = await verifyFirebaseToken(auth.slice(7)); const body = await req.json().catch(() => ({})); const contentType = String(body.contentType || '').toLowerCase(); const kind = String(body.kind || (contentType.startsWith('audio/') ? 'audio' : 'video')).toLowerCase(); const size = Number(body.size || 0); const isAudio = kind === 'audio'; const allowed = isAudio ? AUDIO_TYPES : VIDEO_TYPES; const maxBytes = isAudio ? MAX_AUDIO_BYTES : MAX_VIDEO_BYTES; if (!allowed.has(contentType)) throw new Error(isAudio ? 'unsupported_audio_type' : 'unsupported_video_type'); if (!Number.isInteger(size) || size < 1 || size > maxBytes) throw new Error(isAudio ? 'audio_size_limit' : 'video_size_limit'); const path = `users/${user.sub}/${isAudio ? 'audio' : 'videos'}/${crypto.randomUUID()}.${extensionFor(contentType, kind)}`; const {data, error} = await supabase.storage.from(BUCKET).createSignedUploadUrl(path); if (error || !data) throw new Error('signed_upload_unavailable'); return new Response(JSON.stringify({bucket:BUCKET,path,token:data.token,signedUrl:data.signedUrl,maxBytes,userId:user.sub,kind,contentType}), {status:201,headers:{...headers,'Content-Type':'application/json','Cache-Control':'no-store'}}); }
+  catch (error) { const code = error instanceof Error ? error.message : 'upload_url_failed'; const status = code === 'auth_required' || code.includes('firebase') || code === 'invalid_firebase_token' || code === 'unknown_firebase_key' ? 401 : code.includes('size_limit') || code.includes('unsupported_') ? 400 : 500; return new Response(JSON.stringify({error:code}), {status,headers:{...headers,'Content-Type':'application/json','Cache-Control':'no-store'}}); }
+});
