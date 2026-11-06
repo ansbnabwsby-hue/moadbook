@@ -785,6 +785,121 @@
           ".validate": "newData.val() === true"
         }
       }
+    },
+    "publicChatMessages": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "createdAt"
+      ],
+      "$messageId": {
+        ".write": "auth != null && root.child('publicChatMembers').child(auth.uid).exists() && ((!data.exists() && newData.child('authorId').val() === auth.uid) || (data.exists() && data.child('authorId').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['authorId', 'authorName', 'body', 'createdAt'])",
+        "authorId": {
+          ".validate": "newData.isString() && (!data.exists() || newData.val() === data.val())"
+        },
+        "authorName": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+        },
+        "body": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 2000"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && (!data.exists() || newData.val() === data.val())"
+        },
+        "replyToId": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128"
+        },
+        "replyToAuthorId": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128"
+        },
+        "replyToAuthorName": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+        },
+        "replyToBody": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "attachmentData": {
+          ".validate": "newData.isString() && newData.val().length <= 95000 && newData.val().matches(/^data:image\\/jpeg;base64,/)"
+        },
+        "attachmentName": {
+          ".validate": "newData.isString() && newData.val().length <= 80"
+        },
+        "editedAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "publicChatMembers": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "!newData.exists() || newData.hasChildren(['joinedAt', 'notificationsEnabled'])",
+        "joinedAt": {
+          ".validate": "newData.isNumber() && (!data.exists() || newData.val() === data.val())"
+        },
+        "notificationsEnabled": {
+          ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "publicChatReads": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "!newData.exists() || newData.hasChildren(['lastReadAt'])",
+        "lastReadAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "publicChatNotifications": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && root.child('publicChatMembers').child($uid).child('notificationsEnabled').val() === true",
+        ".indexOn": [
+          "createdAt"
+        ],
+        "$notificationId": {
+          ".write": "auth != null && ((auth.uid === $uid && !newData.exists()) || (!data.exists() && root.child('publicChatMembers').child($uid).child('notificationsEnabled').val() === true && root.child('publicChatMembers').child(auth.uid).exists() && root.child('publicChatMessages').child(newData.child('messageId').val()).child('authorId').val() === auth.uid && newData.child('recipientId').val() === $uid))",
+          ".validate": "newData.hasChildren(['type', 'actorId', 'actorName', 'recipientId', 'messageId', 'createdAt', 'text', 'read']) && newData.child('type').val() === 'public_chat' && newData.child('actorId').val() !== newData.child('recipientId').val()",
+          "type": {
+            ".validate": "newData.isString() && newData.val() === 'public_chat'"
+          },
+          "actorId": {
+            ".validate": "newData.isString() && newData.val() === auth.uid"
+          },
+          "actorName": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+          },
+          "recipientId": {
+            ".validate": "newData.isString() && newData.val() === $uid"
+          },
+          "messageId": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 128"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "text": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 160"
+          },
+          "read": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.isBoolean()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }
