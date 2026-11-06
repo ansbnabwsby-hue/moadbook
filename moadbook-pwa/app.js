@@ -459,9 +459,7 @@ async function loadMillsAnnouncement() {
     const size = ['small', 'medium', 'large'].includes(savedStyle.size) ? savedStyle.size : 'small';
     const fontSizes = { small: '10px', medium: '12px', large: '14px' };
     const diagnostic = !visible && isAdminViewer;
-    const displayText = visible ? text : diagnostic
-      ? (item ? 'إعلان ميلز موجود، لكن النص فارغ أو الإعلان غير مفعّل.' : 'لا يوجد سجل إعلان في Firebase ضمن /millsAnnouncement.')
-      : '';
+    const displayText = visible ? text : '';
     const copies = label.querySelectorAll('.mills-announcement-copy');
     if (copies.length > 1) { copies[0].textContent = displayText; copies[1].textContent = visible ? displayText : ''; } else label.textContent = visible ? `${text}　　${text}` : displayText;
     label.setAttribute('aria-label', displayText);
@@ -470,8 +468,8 @@ async function loadMillsAnnouncement() {
     box.dataset.speed = speed;
     box.dataset.size = size;
     box.style.setProperty('--mills-announcement-font-size', fontSizes[size]);
-    box.classList.toggle('hidden', !visible && !diagnostic);
-    box.setAttribute('aria-hidden', visible || diagnostic ? 'false' : 'true');
+    box.classList.toggle('hidden', !visible);
+    box.setAttribute('aria-hidden', visible ? 'false' : 'true');
     label.style.animation = visible ? '' : 'none';
 
     const syncSpeed = () => {
@@ -486,24 +484,17 @@ async function loadMillsAnnouncement() {
       window.addEventListener('resize', box._tickerResizeBound, { passive: true });
     }
     requestAnimationFrame(syncSpeed);
-    if (diagnostic) status('millsStatus', 'حالة إعلان ميلز موضحة في شريط التشخيص أسفل أيقونات ميلز.', 'error');
+    if (diagnostic) {
+      const message = !item ? 'لا يوجد سجل إعلان ضمن /millsAnnouncement.' : item.active === true && !text ? 'الإعلان مفعّل لكن نصه فارغ؛ الشريط مخفي.' : 'الإعلان متوقف؛ تم إخفاء الشريط بالكامل.';
+      status('millsStatus', message, item?.active === false ? 'ok' : 'error');
+    }
     return visible;
   } catch (error) {
     console.warn('mills announcement', error?.firebaseCode || error?.message);
-    if (isAdminViewer) {
-      const copies = label.querySelectorAll('.mills-announcement-copy');
-      const message = 'تعذرت قراءة إعلان ميلز من Firebase. راجع صلاحية القراءة لمسار /millsAnnouncement.';
-      if (copies.length > 1) { copies[0].textContent = message; copies[1].textContent = ''; } else label.textContent = message;
-      label.setAttribute('aria-label', message);
-      label.style.animation = 'none';
-      box.dataset.announcementState = 'error';
-      box.classList.remove('hidden');
-      box.setAttribute('aria-hidden', 'false');
-      status('millsStatus', 'تعذرت قراءة إعلان ميلز من Firebase؛ راجع قواعد القراءة لمسار /millsAnnouncement.', 'error');
-    } else {
-      box.classList.add('hidden');
-      box.setAttribute('aria-hidden', 'true');
-    }
+    box.dataset.announcementState = 'error';
+    box.classList.add('hidden');
+    box.setAttribute('aria-hidden', 'true');
+    if (isAdminViewer) status('millsStatus', 'تعذرت قراءة إعلان ميلز من Firebase؛ راجع قواعد القراءة لمسار /millsAnnouncement.', 'error');
     return false;
   }
 }

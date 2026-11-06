@@ -50,3 +50,4 @@ html.dark-mode .mills-announcement[data-theme="gold"],.dark-mode .mills-announce
 
 .mills-announcement[data-theme="white"],.admin-mills-announcement-preview[data-theme="white"]{background:rgba(255,255,255,.68);color:#151515;border:1px solid rgba(255,255,255,.52);backdrop-filter:blur(8px) saturate(1.25);box-shadow:0 4px 14px #0002}
 html.dark-mode .mills-announcement[data-theme="white"],.dark-mode .mills-announcement[data-theme="white"]{background:rgba(255,255,255,.68);color:#151515;border:1px solid rgba(255,255,255,.52);backdrop-filter:blur(8px) saturate(1.25);box-shadow:0 4px 14px #0002}
+.admin-mills-announcement-preview[hidden],.admin-mills-announcement-preview.hidden{display:none!important}

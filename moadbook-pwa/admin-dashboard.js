@@ -426,7 +426,6 @@
     if (text.length < 4) { if (feedback) { feedback.textContent = 'اكتب نصًا من 4 أحرف على الأقل.'; feedback.className = 'status error'; } return; }
     if (!window.confirm('إرسال هذا الإشعار إلى مشتركي الإشعارات؟')) return;
     if (button) button.disabled = true;
-    if (toggleControl) toggleControl.disabled = true;
     try {
       const uid = app.getSession()?.user?.id;
       const id = `b${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
@@ -438,7 +437,7 @@
     } catch (error) {
       console.warn('admin broadcast', error?.firebaseCode || error?.message);
       if (feedback) { feedback.textContent = 'تعذر حفظ الإشعار. تأكد من تطبيق قاعدة /adminBroadcasts المحدّثة.'; feedback.className = 'status error'; }
-    } finally { if (button) button.disabled = false; if (toggleControl) toggleControl.disabled = false; }
+    } finally { if (button) button.disabled = false; }
   }
 
   function updateMillsAnnouncementPreview() {
@@ -454,6 +453,7 @@
     const text = String(input?.value || '').trim();
     const enabled = toggle?.checked === true;
     const hasText = text.length > 0;
+    const visible = enabled && hasText;
     const theme = ['white', 'violet', 'gold'].includes(themeSelect?.value) ? themeSelect.value : 'white';
     const speed = ['slow', 'normal', 'fast'].includes(speedSelect?.value) ? speedSelect.value : 'normal';
     const size = ['small', 'medium', 'large'].includes(sizeSelect?.value) ? sizeSelect.value : 'small';
@@ -461,14 +461,17 @@
     preview.dataset.theme = theme;
     preview.dataset.speed = speed;
     preview.dataset.size = size;
+    preview.hidden = !visible;
+    preview.setAttribute('aria-hidden', String(!visible));
     preview.style.setProperty('--mills-announcement-font-size', fontSizes[size]);
     const previewText = text || 'سيظهر نص إعلانك المتحرك هنا…';
     const previewCopies = label.querySelectorAll('.mills-announcement-copy');
     if (previewCopies.length > 1) { previewCopies[0].textContent = previewText; previewCopies[1].textContent = hasText ? previewText : ''; } else label.textContent = previewText;
-    preview.classList.toggle('is-disabled', !enabled || !hasText);
-    label.style.animation = enabled && hasText ? '' : 'none';
+    preview.classList.toggle('hidden', !visible);
+    preview.classList.toggle('is-disabled', !visible);
+    label.style.animation = visible ? '' : 'none';
     if (hint) hint.textContent = enabled ? (hasText ? 'هكذا سيظهر في ميلز بعد الحفظ.' : 'اكتب النص أولًا لمعاينة الحركة.') : 'معاينة فقط؛ فعّل الإعلان ليظهر للمستخدمين.';
-    if (enabled && hasText) {
+    if (visible) {
       requestAnimationFrame(() => {
         const clip = preview.querySelector('.mills-announcement-clip');
         const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[speed];
@@ -491,6 +494,7 @@
     const feedback = documentRef.getElementById('adminMillsAnnouncementStatus');
     if (enabled && text.length < 4) { if (feedback) { feedback.textContent = 'اكتب إعلانًا قصيرًا قبل التفعيل.'; feedback.className = 'status error'; } return; }
     if (button) button.disabled = true;
+    if (toggleControl) toggleControl.disabled = true;
     try {
       await app.dbPut('/millsAnnouncement', { text: text.slice(0, 180), active: enabled, style: { theme, speed, size }, updatedAt: Date.now(), updatedBy: app.getSession()?.user?.id || '' });
       const saved = await app.dbGet('/millsAnnouncement');
@@ -502,7 +506,7 @@
     } catch (error) {
       console.warn('admin mills announcement', error?.firebaseCode || error?.message);
       if (feedback) { feedback.textContent = 'تعذر حفظ الإعلان أو قراءته بعد الحفظ. تحقق من قواعد القراءة والكتابة لمسار /millsAnnouncement.'; feedback.className = 'status error'; }
-    } finally { if (button) button.disabled = false; }
+    } finally { if (button) button.disabled = false; if (toggleControl) toggleControl.disabled = false; }
   }
 
   async function loadMillsAnnouncementForm() {
