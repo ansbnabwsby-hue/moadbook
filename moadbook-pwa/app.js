@@ -454,14 +454,17 @@ async function loadMillsAnnouncement() {
     const text = String(item?.text || '').trim();
     const visible = item?.active === true && text.length > 0;
     const savedStyle = item?.style || {};
-    const theme = ['black', 'violet', 'gold'].includes(savedStyle.theme) ? savedStyle.theme : 'black';
+    const theme = savedStyle.theme === 'black' ? 'white' : (['white', 'violet', 'gold'].includes(savedStyle.theme) ? savedStyle.theme : 'white');
     const speed = ['slow', 'normal', 'fast'].includes(savedStyle.speed) ? savedStyle.speed : 'normal';
     const size = ['small', 'medium', 'large'].includes(savedStyle.size) ? savedStyle.size : 'small';
     const fontSizes = { small: '10px', medium: '12px', large: '14px' };
     const diagnostic = !visible && isAdminViewer;
-    label.textContent = visible ? text : diagnostic
+    const displayText = visible ? text : diagnostic
       ? (item ? 'إعلان ميلز موجود، لكن النص فارغ أو الإعلان غير مفعّل.' : 'لا يوجد سجل إعلان في Firebase ضمن /millsAnnouncement.')
       : '';
+    const copies = label.querySelectorAll('.mills-announcement-copy');
+    if (copies.length > 1) { copies[0].textContent = displayText; copies[1].textContent = visible ? displayText : ''; } else label.textContent = visible ? `${text}　　${text}` : displayText;
+    label.setAttribute('aria-label', displayText);
     box.dataset.announcementState = visible ? 'active' : diagnostic ? 'diagnostic' : 'hidden';
     box.dataset.theme = theme;
     box.dataset.speed = speed;
@@ -475,8 +478,7 @@ async function loadMillsAnnouncement() {
       const clip = box.querySelector('.mills-announcement-clip');
       if (box.dataset.announcementState !== 'active' || !clip) return;
       const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[box.dataset.speed] || 45;
-      const width = clip.clientWidth || window.innerWidth;
-      label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / pixelsPerSecond)}s`;
+      label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 14) / pixelsPerSecond)}s`;
     };
     box._tickerSyncSpeed = syncSpeed;
     if (!box._tickerResizeBound) {
@@ -484,12 +486,15 @@ async function loadMillsAnnouncement() {
       window.addEventListener('resize', box._tickerResizeBound, { passive: true });
     }
     requestAnimationFrame(syncSpeed);
-    if (diagnostic) status('millsStatus', 'حالة إعلان ميلز موضحة في الشريط الأسود أعلى موجز الفيديوهات.', 'error');
+    if (diagnostic) status('millsStatus', 'حالة إعلان ميلز موضحة في شريط التشخيص أسفل أيقونات ميلز.', 'error');
     return visible;
   } catch (error) {
     console.warn('mills announcement', error?.firebaseCode || error?.message);
     if (isAdminViewer) {
-      label.textContent = 'تعذرت قراءة إعلان ميلز من Firebase. راجع صلاحية القراءة لمسار /millsAnnouncement.';
+      const copies = label.querySelectorAll('.mills-announcement-copy');
+      const message = 'تعذرت قراءة إعلان ميلز من Firebase. راجع صلاحية القراءة لمسار /millsAnnouncement.';
+      if (copies.length > 1) { copies[0].textContent = message; copies[1].textContent = ''; } else label.textContent = message;
+      label.setAttribute('aria-label', message);
       label.style.animation = 'none';
       box.dataset.announcementState = 'error';
       box.classList.remove('hidden');

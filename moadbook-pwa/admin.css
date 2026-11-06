@@ -47,3 +47,6 @@ html.dark-mode .mills-announcement[data-theme="violet"],.dark-mode .mills-announ
 html.dark-mode .mills-announcement[data-theme="gold"],.dark-mode .mills-announcement[data-theme="gold"]{background:#f2c14e;color:#241900}
 @media(max-width:420px){.admin-mills-custom-grid{grid-template-columns:1fr 1fr}.admin-mills-custom-control:last-child{grid-column:1/-1}}
 .admin-mills-announcement-preview .mills-announcement-clip span,.mills-announcement .mills-announcement-clip span{color:inherit}
+
+.mills-announcement[data-theme="white"],.admin-mills-announcement-preview[data-theme="white"]{background:#fff;color:#151515;border-color:#ffffff}
+html.dark-mode .mills-announcement[data-theme="white"],.dark-mode .mills-announcement[data-theme="white"]{background:#fff;color:#151515;border:0;box-shadow:none}

@@ -43,18 +43,18 @@
       <div id="adminBroadcastStatus" class="status" aria-live="polite"></div>
     </div>
     <div class="card admin-card admin-tool-card">
-      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر كشريط نصي أسفل رأس ميلز وقبل الفيديوهات. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
+      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر في ميلز أسفل صف أيقونات الصوت والخروج، بحروف واضحة وحركة متصلة. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
       <label class="label" for="adminMillsAnnouncement">نص الإعلان</label>
       <textarea id="adminMillsAnnouncement" class="field" maxlength="180" rows="2" placeholder="اكتب إعلانًا مختصرًا يظهر في ميلز…"></textarea>
       <div class="admin-mills-custom-grid">
-        <label class="admin-mills-custom-control">لون الشريط<select id="adminMillsAnnouncementTheme" class="field"><option value="black">أسود أنيق</option><option value="violet">بنفسجي موحّد</option><option value="gold">ذهبي واضح</option></select></label>
+        <label class="admin-mills-custom-control">لون الشريط<select id="adminMillsAnnouncementTheme" class="field"><option value="white">خلفية بيضاء</option><option value="violet">بنفسجي موحّد</option><option value="gold">ذهبي واضح</option></select></label>
         <label class="admin-mills-custom-control">سرعة الحركة<select id="adminMillsAnnouncementSpeed" class="field"><option value="slow">هادئة</option><option value="normal">متوسطة</option><option value="fast">سريعة</option></select></label>
         <label class="admin-mills-custom-control">حجم الخط<select id="adminMillsAnnouncementSize" class="field"><option value="small">صغير</option><option value="medium">متوسط</option><option value="large">كبير</option></select></label>
       </div>
       <div class="admin-mills-preview-shell">
         <div class="admin-mills-preview-heading"><strong>معاينة مباشرة</strong><small id="adminMillsAnnouncementPreviewHint">اكتب النص لترى شكله قبل الحفظ.</small></div>
         <div id="adminMillsAnnouncementPreview" class="mills-announcement admin-mills-announcement-preview is-disabled" aria-label="معاينة شريط إعلان ميلز">
-          <div class="mills-announcement-clip"><span id="adminMillsAnnouncementPreviewText" lang="ar" dir="rtl"></span></div>
+          <div class="mills-announcement-clip"><span id="adminMillsAnnouncementPreviewText" lang="ar" dir="rtl"><span class="mills-announcement-copy"></span><span class="mills-announcement-copy" aria-hidden="true"></span></span></div>
         </div>
       </div>
       <label class="admin-switch"><input id="adminMillsAnnouncementEnabled" type="checkbox"><span>تفعيل عرض الإعلان</span></label>
@@ -453,7 +453,7 @@
     const text = String(input?.value || '').trim();
     const enabled = toggle?.checked === true;
     const hasText = text.length > 0;
-    const theme = ['black', 'violet', 'gold'].includes(themeSelect?.value) ? themeSelect.value : 'black';
+    const theme = ['white', 'violet', 'gold'].includes(themeSelect?.value) ? themeSelect.value : 'white';
     const speed = ['slow', 'normal', 'fast'].includes(speedSelect?.value) ? speedSelect.value : 'normal';
     const size = ['small', 'medium', 'large'].includes(sizeSelect?.value) ? sizeSelect.value : 'small';
     const fontSizes = { small: '10px', medium: '12px', large: '14px' };
@@ -461,16 +461,17 @@
     preview.dataset.speed = speed;
     preview.dataset.size = size;
     preview.style.setProperty('--mills-announcement-font-size', fontSizes[size]);
-    label.textContent = text || 'سيظهر نص إعلانك المتحرك هنا…';
+    const previewText = text || 'سيظهر نص إعلانك المتحرك هنا…';
+    const previewCopies = label.querySelectorAll('.mills-announcement-copy');
+    if (previewCopies.length > 1) { previewCopies[0].textContent = previewText; previewCopies[1].textContent = hasText ? previewText : ''; } else label.textContent = previewText;
     preview.classList.toggle('is-disabled', !enabled || !hasText);
     label.style.animation = enabled && hasText ? '' : 'none';
     if (hint) hint.textContent = enabled ? (hasText ? 'هكذا سيظهر في ميلز بعد الحفظ.' : 'اكتب النص أولًا لمعاينة الحركة.') : 'معاينة فقط؛ فعّل الإعلان ليظهر للمستخدمين.';
     if (enabled && hasText) {
       requestAnimationFrame(() => {
         const clip = preview.querySelector('.mills-announcement-clip');
-        const width = clip?.clientWidth || preview.clientWidth || 320;
         const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[speed];
-        label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / pixelsPerSecond)}s`;
+        label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 14) / pixelsPerSecond)}s`;
       });
     }
   }
@@ -479,7 +480,9 @@
     if (!isAdmin()) return;
     const text = String(documentRef.getElementById('adminMillsAnnouncement')?.value || '').trim();
     const enabled = documentRef.getElementById('adminMillsAnnouncementEnabled')?.checked === true;
-    const theme = ['black', 'violet', 'gold'].includes(documentRef.getElementById('adminMillsAnnouncementTheme')?.value) ? documentRef.getElementById('adminMillsAnnouncementTheme').value : 'black';
+    const selectedTheme = ['white', 'violet', 'gold'].includes(documentRef.getElementById('adminMillsAnnouncementTheme')?.value) ? documentRef.getElementById('adminMillsAnnouncementTheme').value : 'white';
+    // Preserve the deployed RTDB whitelist: its legacy 'black' value now represents the requested white default.
+    const theme = selectedTheme === 'white' ? 'black' : selectedTheme;
     const speed = ['slow', 'normal', 'fast'].includes(documentRef.getElementById('adminMillsAnnouncementSpeed')?.value) ? documentRef.getElementById('adminMillsAnnouncementSpeed').value : 'normal';
     const size = ['small', 'medium', 'large'].includes(documentRef.getElementById('adminMillsAnnouncementSize')?.value) ? documentRef.getElementById('adminMillsAnnouncementSize').value : 'small';
     const button = documentRef.getElementById('adminMillsAnnouncementSave');
@@ -512,7 +515,7 @@
       const themeSelect = documentRef.getElementById('adminMillsAnnouncementTheme');
       const speedSelect = documentRef.getElementById('adminMillsAnnouncementSpeed');
       const sizeSelect = documentRef.getElementById('adminMillsAnnouncementSize');
-      if (themeSelect) themeSelect.value = ['black', 'violet', 'gold'].includes(style.theme) ? style.theme : 'black';
+      if (themeSelect) themeSelect.value = style.theme === 'black' ? 'white' : (['white', 'violet', 'gold'].includes(style.theme) ? style.theme : 'white');
       if (speedSelect) speedSelect.value = ['slow', 'normal', 'fast'].includes(style.speed) ? style.speed : 'normal';
       if (sizeSelect) sizeSelect.value = ['small', 'medium', 'large'].includes(style.size) ? style.size : 'small';
       updateMillsAnnouncementPreview();
