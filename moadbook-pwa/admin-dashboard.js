@@ -447,14 +447,17 @@
   }
 
   async function loadMillsAnnouncementForm() {
+    const feedback = documentRef.getElementById('adminMillsAnnouncementStatus');
     try {
       const value = await app.dbGet('/millsAnnouncement');
       const input = documentRef.getElementById('adminMillsAnnouncement');
       const toggle = documentRef.getElementById('adminMillsAnnouncementEnabled');
       if (input) input.value = String(value?.text || '');
       if (toggle) toggle.checked = value?.active === true;
+      if (feedback) { feedback.textContent = ''; feedback.className = 'status'; }
     } catch (error) {
       console.warn('admin mills announcement read', error?.firebaseCode || error?.message);
+      if (feedback) { feedback.textContent = 'تعذر قراءة الإعلان. تأكد من حفظ قواعد /millsAnnouncement في Firebase ثم أعد المحاولة.'; feedback.className = 'status error'; }
     }
   }
 
