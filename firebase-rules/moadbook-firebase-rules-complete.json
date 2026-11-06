@@ -534,11 +534,11 @@
         "darkMode": {
           ".validate": "newData.isBoolean()"
         },
-        "$other": {
-          ".validate": false
-        },
         "notificationsEnabled": {
           ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": false
         }
       }
     },
@@ -935,7 +935,7 @@
     "millsAnnouncement": {
       ".read": "auth != null",
       ".write": "auth != null && auth.token.email === 'moad33@accounts.example.com'",
-      ".validate": "newData.hasChildren(['text', 'active', 'updatedAt', 'updatedBy']) && (!newData.child('active').val() || newData.child('text').val().length >= 4)",
+      ".validate": "newData.hasChildren(['text', 'active', 'updatedAt', 'updatedBy'])",
       "text": {
         ".validate": "newData.isString() && newData.val().length <= 180"
       },
