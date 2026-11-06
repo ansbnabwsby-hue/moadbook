@@ -935,7 +935,7 @@
     "millsAnnouncement": {
       ".read": "auth != null",
       ".write": "auth != null && auth.token.email === 'moad33@accounts.example.com'",
-      ".validate": "newData.hasChildren(['text', 'active', 'updatedAt', 'updatedBy'])",
+      ".validate": "newData.hasChildren(['text', 'active', 'updatedAt', 'updatedBy']) && (!newData.child('style').exists() || newData.child('style').hasChildren(['theme', 'speed', 'size']))",
       "text": {
         ".validate": "newData.isString() && newData.val().length <= 180"
       },
@@ -947,6 +947,21 @@
       },
       "updatedBy": {
         ".validate": "newData.isString() && newData.val() === auth.uid && auth != null && auth.token.email === 'moad33@accounts.example.com'"
+      },
+      "style": {
+        ".validate": "newData.hasChildren(['theme', 'speed', 'size'])",
+        "theme": {
+          ".validate": "newData.isString() && newData.val().matches(/^(black|violet|gold)$/)"
+        },
+        "speed": {
+          ".validate": "newData.isString() && newData.val().matches(/^(slow|normal|fast)$/)"
+        },
+        "size": {
+          ".validate": "newData.isString() && newData.val().matches(/^(small|medium|large)$/)"
+        },
+        "$other": {
+          ".validate": false
+        }
       },
       "$other": {
         ".validate": false

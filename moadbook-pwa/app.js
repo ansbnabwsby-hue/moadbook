@@ -446,18 +446,27 @@ async function loadMillsAnnouncement() {
   const box = $('millsAnnouncement');
   const label = $('millsAnnouncementText');
   const isAdminViewer = String(session?.user?.email || '').trim().toLowerCase() === 'moad33@accounts.example.com';
-  if (!box || !label) return;
-  if (!session) { box.classList.add('hidden'); return; }
+  if (!box || !label) return false;
+  if (!session) { box.classList.add('hidden'); return false; }
 
   try {
     const item = await dbGet('/millsAnnouncement');
     const text = String(item?.text || '').trim();
     const visible = item?.active === true && text.length > 0;
+    const savedStyle = item?.style || {};
+    const theme = ['black', 'violet', 'gold'].includes(savedStyle.theme) ? savedStyle.theme : 'black';
+    const speed = ['slow', 'normal', 'fast'].includes(savedStyle.speed) ? savedStyle.speed : 'normal';
+    const size = ['small', 'medium', 'large'].includes(savedStyle.size) ? savedStyle.size : 'small';
+    const fontSizes = { small: '10px', medium: '12px', large: '14px' };
     const diagnostic = !visible && isAdminViewer;
     label.textContent = visible ? text : diagnostic
       ? (item ? 'إعلان ميلز موجود، لكن النص فارغ أو الإعلان غير مفعّل.' : 'لا يوجد سجل إعلان في Firebase ضمن /millsAnnouncement.')
       : '';
     box.dataset.announcementState = visible ? 'active' : diagnostic ? 'diagnostic' : 'hidden';
+    box.dataset.theme = theme;
+    box.dataset.speed = speed;
+    box.dataset.size = size;
+    box.style.setProperty('--mills-announcement-font-size', fontSizes[size]);
     box.classList.toggle('hidden', !visible && !diagnostic);
     box.setAttribute('aria-hidden', visible || diagnostic ? 'false' : 'true');
     label.style.animation = visible ? '' : 'none';
@@ -465,8 +474,9 @@ async function loadMillsAnnouncement() {
     const syncSpeed = () => {
       const clip = box.querySelector('.mills-announcement-clip');
       if (box.dataset.announcementState !== 'active' || !clip) return;
+      const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[box.dataset.speed] || 45;
       const width = clip.clientWidth || window.innerWidth;
-      label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / 45)}s`;
+      label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / pixelsPerSecond)}s`;
     };
     box._tickerSyncSpeed = syncSpeed;
     if (!box._tickerResizeBound) {
@@ -475,6 +485,7 @@ async function loadMillsAnnouncement() {
     }
     requestAnimationFrame(syncSpeed);
     if (diagnostic) status('millsStatus', 'حالة إعلان ميلز موضحة في الشريط الأسود أعلى موجز الفيديوهات.', 'error');
+    return visible;
   } catch (error) {
     console.warn('mills announcement', error?.firebaseCode || error?.message);
     if (isAdminViewer) {
@@ -488,6 +499,7 @@ async function loadMillsAnnouncement() {
       box.classList.add('hidden');
       box.setAttribute('aria-hidden', 'true');
     }
+    return false;
   }
 }
 
@@ -710,6 +722,6 @@ try{const color=localStorage.getItem('moadbook-theme'),accent2=localStorage.getI
 window.moadbookBack=()=>{if($('appShell').classList.contains('active')){if(currentPage==='person'){showPage(personReturnPage==='person'?'friends':personReturnPage);return true}if(currentPage==='settings'){navigate('profile');return true}if(currentPage==='notifications'){navigate('home');return true}if(currentPage==='messages'&&activeChat){setChatFullscreen(false);stopTypingPulse();stopChatPresence();activeChat=null;pendingChatImage=null;pendingChatReply=null;renderChatReplyPreview();$('chatWindow').classList.add('hidden');$('chatList').classList.remove('hidden');loadChats();return true}if(currentPage!=='home'){navigate('home');return true}return false}if($('authScreen').classList.contains('active')){showScreen('welcome');return true}return false};
 window.moadbookOpenPage=page=>{if(session&&['home','mills','friends','messages','groups','profile','settings','notifications'].includes(page))navigate(page)};
 window.MoadbookExportData=Object.freeze({postMedia:id=>dbGet(`/postMedia/${encodeURIComponent(id)}`),profileMedia:uid=>safeGet(`/profileMedia/${encodeURIComponent(uid)}`,null),profile:uid=>safeGet(`/profiles/${encodeURIComponent(uid)}`,null),timeLabel});
-window.MoadbookApp=Object.freeze({getSession:()=>session,currentPage:()=>currentPage,dbGet,dbPut,dbPost,dbPatch,dbDelete,safeGet,toast,status,emptyCard,mapRows,postFromFirebase,renderFeed,getFeedLikes:()=>feedLikes,compressImage,setComposeGroupContext,navigate,showAppDialog,confirmApp});
+window.MoadbookApp=Object.freeze({getSession:()=>session,currentPage:()=>currentPage,dbGet,dbPut,dbPost,dbPatch,dbDelete,safeGet,toast,status,emptyCard,mapRows,postFromFirebase,renderFeed,getFeedLikes:()=>feedLikes,compressImage,setComposeGroupContext,navigate,reloadMillsAnnouncement:()=>loadMillsAnnouncement(),showAppDialog,confirmApp});
 wire();boot();
 })();

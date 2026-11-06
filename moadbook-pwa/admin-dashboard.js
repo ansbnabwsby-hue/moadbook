@@ -46,6 +46,11 @@
       <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر كشريط نصي أسفل رأس ميلز وقبل الفيديوهات. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
       <label class="label" for="adminMillsAnnouncement">نص الإعلان</label>
       <textarea id="adminMillsAnnouncement" class="field" maxlength="180" rows="2" placeholder="اكتب إعلانًا مختصرًا يظهر في ميلز…"></textarea>
+      <div class="admin-mills-custom-grid">
+        <label class="admin-mills-custom-control">لون الشريط<select id="adminMillsAnnouncementTheme" class="field"><option value="black">أسود أنيق</option><option value="violet">بنفسجي موحّد</option><option value="gold">ذهبي واضح</option></select></label>
+        <label class="admin-mills-custom-control">سرعة الحركة<select id="adminMillsAnnouncementSpeed" class="field"><option value="slow">هادئة</option><option value="normal">متوسطة</option><option value="fast">سريعة</option></select></label>
+        <label class="admin-mills-custom-control">حجم الخط<select id="adminMillsAnnouncementSize" class="field"><option value="small">صغير</option><option value="medium">متوسط</option><option value="large">كبير</option></select></label>
+      </div>
       <div class="admin-mills-preview-shell">
         <div class="admin-mills-preview-heading"><strong>معاينة مباشرة</strong><small id="adminMillsAnnouncementPreviewHint">اكتب النص لترى شكله قبل الحفظ.</small></div>
         <div id="adminMillsAnnouncementPreview" class="mills-announcement admin-mills-announcement-preview is-disabled" aria-label="معاينة شريط إعلان ميلز">
@@ -441,10 +446,21 @@
     const preview = documentRef.getElementById('adminMillsAnnouncementPreview');
     const label = documentRef.getElementById('adminMillsAnnouncementPreviewText');
     const hint = documentRef.getElementById('adminMillsAnnouncementPreviewHint');
+    const themeSelect = documentRef.getElementById('adminMillsAnnouncementTheme');
+    const speedSelect = documentRef.getElementById('adminMillsAnnouncementSpeed');
+    const sizeSelect = documentRef.getElementById('adminMillsAnnouncementSize');
     if (!preview || !label) return;
     const text = String(input?.value || '').trim();
     const enabled = toggle?.checked === true;
     const hasText = text.length > 0;
+    const theme = ['black', 'violet', 'gold'].includes(themeSelect?.value) ? themeSelect.value : 'black';
+    const speed = ['slow', 'normal', 'fast'].includes(speedSelect?.value) ? speedSelect.value : 'normal';
+    const size = ['small', 'medium', 'large'].includes(sizeSelect?.value) ? sizeSelect.value : 'small';
+    const fontSizes = { small: '10px', medium: '12px', large: '14px' };
+    preview.dataset.theme = theme;
+    preview.dataset.speed = speed;
+    preview.dataset.size = size;
+    preview.style.setProperty('--mills-announcement-font-size', fontSizes[size]);
     label.textContent = text || 'سيظهر نص إعلانك المتحرك هنا…';
     preview.classList.toggle('is-disabled', !enabled || !hasText);
     label.style.animation = enabled && hasText ? '' : 'none';
@@ -453,7 +469,8 @@
       requestAnimationFrame(() => {
         const clip = preview.querySelector('.mills-announcement-clip');
         const width = clip?.clientWidth || preview.clientWidth || 320;
-        label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / 45)}s`;
+        const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[speed];
+        label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / pixelsPerSecond)}s`;
       });
     }
   }
@@ -462,16 +479,20 @@
     if (!isAdmin()) return;
     const text = String(documentRef.getElementById('adminMillsAnnouncement')?.value || '').trim();
     const enabled = documentRef.getElementById('adminMillsAnnouncementEnabled')?.checked === true;
+    const theme = ['black', 'violet', 'gold'].includes(documentRef.getElementById('adminMillsAnnouncementTheme')?.value) ? documentRef.getElementById('adminMillsAnnouncementTheme').value : 'black';
+    const speed = ['slow', 'normal', 'fast'].includes(documentRef.getElementById('adminMillsAnnouncementSpeed')?.value) ? documentRef.getElementById('adminMillsAnnouncementSpeed').value : 'normal';
+    const size = ['small', 'medium', 'large'].includes(documentRef.getElementById('adminMillsAnnouncementSize')?.value) ? documentRef.getElementById('adminMillsAnnouncementSize').value : 'small';
     const button = documentRef.getElementById('adminMillsAnnouncementSave');
     const feedback = documentRef.getElementById('adminMillsAnnouncementStatus');
     if (enabled && text.length < 4) { if (feedback) { feedback.textContent = 'اكتب إعلانًا قصيرًا قبل التفعيل.'; feedback.className = 'status error'; } return; }
     if (button) button.disabled = true;
     try {
-      await app.dbPut('/millsAnnouncement', { text: text.slice(0, 180), active: enabled, updatedAt: Date.now(), updatedBy: app.getSession()?.user?.id || '' });
+      await app.dbPut('/millsAnnouncement', { text: text.slice(0, 180), active: enabled, style: { theme, speed, size }, updatedAt: Date.now(), updatedBy: app.getSession()?.user?.id || '' });
       const saved = await app.dbGet('/millsAnnouncement');
-      const verified = saved && saved.active === enabled && String(saved.text || '') === text.slice(0, 180);
+      const verified = saved && saved.active === enabled && String(saved.text || '') === text.slice(0, 180) && saved.style?.theme === theme && saved.style?.speed === speed && saved.style?.size === size;
       if (!verified) { if (feedback) { feedback.textContent = 'تم إرسال الحفظ لكن لم أستطع التحقق من قراءة الإعلان. راجع قواعد القراءة لمسار /millsAnnouncement.'; feedback.className = 'status error'; } return; }
-      if (feedback) { feedback.textContent = enabled ? 'تم حفظ الإعلان والتحقق منه في Firebase. افتح ميلز لعرضه.' : 'تم حفظ الإعداد والتحقق من إيقاف الإعلان.'; feedback.className = 'status ok'; }
+      const displayed = enabled ? await app.reloadMillsAnnouncement() : (await app.reloadMillsAnnouncement(), false);
+      if (feedback) { feedback.textContent = enabled ? (displayed ? 'تم حفظ الإعلان وقراءته وتحديث شريط ميلز.' : 'حُفظت البيانات، لكن ميلز لا يقرأ إعلانًا نشطًا. راجع التشخيص داخل ميلز.') : 'تم حفظ الإعداد والتحقق من إيقاف الإعلان.'; feedback.className = enabled && !displayed ? 'status error' : 'status ok'; }
       updateMillsAnnouncementPreview();
     } catch (error) {
       console.warn('admin mills announcement', error?.firebaseCode || error?.message);
@@ -487,6 +508,13 @@
       const toggle = documentRef.getElementById('adminMillsAnnouncementEnabled');
       if (input) input.value = String(value?.text || '');
       if (toggle) toggle.checked = value?.active === true;
+      const style = value?.style || {};
+      const themeSelect = documentRef.getElementById('adminMillsAnnouncementTheme');
+      const speedSelect = documentRef.getElementById('adminMillsAnnouncementSpeed');
+      const sizeSelect = documentRef.getElementById('adminMillsAnnouncementSize');
+      if (themeSelect) themeSelect.value = ['black', 'violet', 'gold'].includes(style.theme) ? style.theme : 'black';
+      if (speedSelect) speedSelect.value = ['slow', 'normal', 'fast'].includes(style.speed) ? style.speed : 'normal';
+      if (sizeSelect) sizeSelect.value = ['small', 'medium', 'large'].includes(style.size) ? style.size : 'small';
       updateMillsAnnouncementPreview();
       if (feedback) { feedback.textContent = ''; feedback.className = 'status'; }
     } catch (error) {
@@ -517,6 +545,7 @@
   documentRef.getElementById('adminMillsAnnouncementSave').addEventListener('click', saveMillsAnnouncement);
   documentRef.getElementById('adminMillsAnnouncement').addEventListener('input', updateMillsAnnouncementPreview);
   documentRef.getElementById('adminMillsAnnouncementEnabled').addEventListener('change', updateMillsAnnouncementPreview);
+  ['adminMillsAnnouncementTheme', 'adminMillsAnnouncementSpeed', 'adminMillsAnnouncementSize'].forEach((id) => documentRef.getElementById(id).addEventListener('change', updateMillsAnnouncementPreview));
   updateMillsAnnouncementPreview();
   adminNav.addEventListener('click', () => { void loadMillsAnnouncementForm(); });
   documentRef.getElementById('adminProfileOpen').addEventListener('click', () => { void loadMillsAnnouncementForm(); });
