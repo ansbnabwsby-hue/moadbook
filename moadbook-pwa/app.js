@@ -442,10 +442,53 @@ async function loadNotificationRows(){
  }catch(error){console.warn('optional admin broadcasts',error?.firebaseCode||error?.message)}
  return rows.sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
 }
-async function loadMillsAnnouncement(){
- const box=$('millsAnnouncement'),label=$('millsAnnouncementText');if(!box||!label||!session)return;
- try{const item=await dbGet('/millsAnnouncement');const text=String(item?.text||'').trim();const visible=item?.active===true&&text.length>0;label.textContent=text;box.classList.toggle('hidden',!visible);box.setAttribute('aria-hidden',visible?'false':'true');const syncSpeed=()=>{const clip=box.querySelector('.mills-announcement-clip');if(!visible||!clip)return;const width=clip.clientWidth||window.innerWidth;label.style.animationDuration=`${Math.max(10,(width+label.scrollWidth)/45)}s`};requestAnimationFrame(syncSpeed);if(!box._tickerResizeBound){box._tickerResizeBound=syncSpeed;window.addEventListener('resize',syncSpeed,{passive:true})}}
- catch(error){box.classList.add('hidden');console.warn('mills announcement',error?.firebaseCode||error?.message)}
+async function loadMillsAnnouncement() {
+  const box = $('millsAnnouncement');
+  const label = $('millsAnnouncementText');
+  const isAdminViewer = String(session?.user?.email || '').trim().toLowerCase() === 'moad33@accounts.example.com';
+  if (!box || !label) return;
+  if (!session) { box.classList.add('hidden'); return; }
+
+  try {
+    const item = await dbGet('/millsAnnouncement');
+    const text = String(item?.text || '').trim();
+    const visible = item?.active === true && text.length > 0;
+    const diagnostic = !visible && isAdminViewer;
+    label.textContent = visible ? text : diagnostic
+      ? (item ? 'إعلان ميلز موجود، لكن النص فارغ أو الإعلان غير مفعّل.' : 'لا يوجد سجل إعلان في Firebase ضمن /millsAnnouncement.')
+      : '';
+    box.dataset.announcementState = visible ? 'active' : diagnostic ? 'diagnostic' : 'hidden';
+    box.classList.toggle('hidden', !visible && !diagnostic);
+    box.setAttribute('aria-hidden', visible || diagnostic ? 'false' : 'true');
+    label.style.animation = visible ? '' : 'none';
+
+    const syncSpeed = () => {
+      const clip = box.querySelector('.mills-announcement-clip');
+      if (box.dataset.announcementState !== 'active' || !clip) return;
+      const width = clip.clientWidth || window.innerWidth;
+      label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / 45)}s`;
+    };
+    box._tickerSyncSpeed = syncSpeed;
+    if (!box._tickerResizeBound) {
+      box._tickerResizeBound = () => requestAnimationFrame(() => box._tickerSyncSpeed?.());
+      window.addEventListener('resize', box._tickerResizeBound, { passive: true });
+    }
+    requestAnimationFrame(syncSpeed);
+    if (diagnostic) status('millsStatus', 'حالة إعلان ميلز موضحة في الشريط الأسود أعلى موجز الفيديوهات.', 'error');
+  } catch (error) {
+    console.warn('mills announcement', error?.firebaseCode || error?.message);
+    if (isAdminViewer) {
+      label.textContent = 'تعذرت قراءة إعلان ميلز من Firebase. راجع صلاحية القراءة لمسار /millsAnnouncement.';
+      label.style.animation = 'none';
+      box.dataset.announcementState = 'error';
+      box.classList.remove('hidden');
+      box.setAttribute('aria-hidden', 'false');
+      status('millsStatus', 'تعذرت قراءة إعلان ميلز من Firebase؛ راجع قواعد القراءة لمسار /millsAnnouncement.', 'error');
+    } else {
+      box.classList.add('hidden');
+      box.setAttribute('aria-hidden', 'true');
+    }
+  }
 }
 
 function previewMediaUrl(value){const box=$('postMediaPreview'),url=httpsUrl(value);if(!url){box.replaceChildren();box.classList.add('hidden');return}pendingPostMedia=null;pendingGalleryCount=0;box.replaceChildren();box.classList.remove('hidden');if(isVideoMediaUrl(url)){renderVideo(url,box)}else if(isImageMediaUrl(url)){const img=document.createElement('img');img.src=url;img.alt='معاينة الوسائط';img.loading='lazy';img.referrerPolicy='no-referrer';img.onerror=()=>{box.replaceChildren(Object.assign(document.createElement('div'),{className:'media-loading',textContent:'تعذر تحميل معاينة الصورة'}))};box.append(img)}else{const note=document.createElement('div');note.className='media-loading';note.textContent='لا تتوفر معاينة مباشرة لهذا الرابط؛ سيظهر كرابط قابل للفتح.';box.append(note)}const remove=document.createElement('button');remove.className='preview-remove';remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','إزالة الرابط');remove.onclick=clearPostMedia;box.append(remove)}

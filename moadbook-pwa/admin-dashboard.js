@@ -439,10 +439,13 @@
     if (button) button.disabled = true;
     try {
       await app.dbPut('/millsAnnouncement', { text: text.slice(0, 180), active: enabled, updatedAt: Date.now(), updatedBy: app.getSession()?.user?.id || '' });
-      if (feedback) { feedback.textContent = enabled ? 'تم حفظ الإعلان وتفعيله في ميلز.' : 'تم حفظ الإعداد وإيقاف عرض الإعلان.'; feedback.className = 'status ok'; }
+      const saved = await app.dbGet('/millsAnnouncement');
+      const verified = saved && saved.active === enabled && String(saved.text || '') === text.slice(0, 180);
+      if (!verified) { if (feedback) { feedback.textContent = 'تم إرسال الحفظ لكن لم أستطع التحقق من قراءة الإعلان. راجع قواعد القراءة لمسار /millsAnnouncement.'; feedback.className = 'status error'; } return; }
+      if (feedback) { feedback.textContent = enabled ? 'تم حفظ الإعلان والتحقق منه في Firebase. افتح ميلز لعرضه.' : 'تم حفظ الإعداد والتحقق من إيقاف الإعلان.'; feedback.className = 'status ok'; }
     } catch (error) {
       console.warn('admin mills announcement', error?.firebaseCode || error?.message);
-      if (feedback) { feedback.textContent = 'تعذر حفظ الإعلان. تأكد من تطبيق قاعدة /millsAnnouncement المحدّثة.'; feedback.className = 'status error'; }
+      if (feedback) { feedback.textContent = 'تعذر حفظ الإعلان أو قراءته بعد الحفظ. تحقق من قواعد القراءة والكتابة لمسار /millsAnnouncement.'; feedback.className = 'status error'; }
     } finally { if (button) button.disabled = false; }
   }
 
