@@ -536,6 +536,9 @@
         },
         "$other": {
           ".validate": false
+        },
+        "notificationsEnabled": {
+          ".validate": "newData.isBoolean()"
         }
       }
     },
@@ -899,6 +902,54 @@
             ".validate": false
           }
         }
+      }
+    },
+    "adminBroadcasts": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "createdAt"
+      ],
+      "$broadcastId": {
+        ".write": "auth != null && auth.token.email === 'moad33@accounts.example.com' && !data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['title', 'text', 'actorId', 'actorName', 'createdAt'])",
+        "title": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 70"
+        },
+        "text": {
+          ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length <= 320"
+        },
+        "actorId": {
+          ".validate": "newData.isString() && newData.val() === auth.uid && auth != null && auth.token.email === 'moad33@accounts.example.com'"
+        },
+        "actorName": {
+          ".validate": "newData.isString() && newData.val() === 'إدارة moadbook'"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "millsAnnouncement": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.token.email === 'moad33@accounts.example.com'",
+      ".validate": "newData.hasChildren(['text', 'active', 'updatedAt', 'updatedBy']) && (!newData.child('active').val() || newData.child('text').val().length >= 4)",
+      "text": {
+        ".validate": "newData.isString() && newData.val().length <= 180"
+      },
+      "active": {
+        ".validate": "newData.isBoolean()"
+      },
+      "updatedAt": {
+        ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+      },
+      "updatedBy": {
+        ".validate": "newData.isString() && newData.val() === auth.uid && auth != null && auth.token.email === 'moad33@accounts.example.com'"
+      },
+      "$other": {
+        ".validate": false
       }
     }
   }

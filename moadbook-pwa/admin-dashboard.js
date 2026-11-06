@@ -33,6 +33,23 @@
       <div class="admin-section-head"><div><h2>البلاغات</h2><p class="muted">راجع البلاغات وحدّث حالتها؛ لا يؤدي ذلك تلقائيًا لحذف محتوى.</p></div></div>
       <div id="adminReportsList" class="admin-list"></div>
     </div>
+    <div class="card admin-card admin-tool-card">
+      <div class="admin-section-head"><div><span class="admin-tool-icon" aria-hidden="true">◉</span><h2>إشعار للمشتركين</h2><p class="muted">يظهر للمستخدمين الذين فعّلوا إشعارات التطبيق فقط. يصل داخل التطبيق، ويظهر كتنبيه نظام عند فتحه ومنح الإذن.</p></div></div>
+      <label class="label" for="adminBroadcastTitle">عنوان الإشعار</label>
+      <input id="adminBroadcastTitle" class="field" type="text" maxlength="70" placeholder="مثال: تحديث جديد في moadbook">
+      <label class="label" for="adminBroadcastText">نص الإشعار</label>
+      <textarea id="adminBroadcastText" class="field" maxlength="320" rows="3" placeholder="اكتب رسالة قصيرة وواضحة للمشتركين…"></textarea>
+      <div class="admin-form-footer"><small id="adminBroadcastCount" class="muted">0/320</small><button id="adminBroadcastSend" class="btn primary" type="button">إرسال للمشتركين</button></div>
+      <div id="adminBroadcastStatus" class="status" aria-live="polite"></div>
+    </div>
+    <div class="card admin-card admin-tool-card">
+      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر كشريط نصي أعلى الفيديوهات. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
+      <label class="label" for="adminMillsAnnouncement">نص الإعلان</label>
+      <textarea id="adminMillsAnnouncement" class="field" maxlength="180" rows="2" placeholder="اكتب إعلانًا مختصرًا يظهر في ميلز…"></textarea>
+      <label class="admin-switch"><input id="adminMillsAnnouncementEnabled" type="checkbox"><span>تفعيل عرض الإعلان</span></label>
+      <div class="admin-form-footer"><small class="muted">حد أقصى 180 حرفًا</small><button id="adminMillsAnnouncementSave" class="btn primary" type="button">حفظ الإعلان</button></div>
+      <div id="adminMillsAnnouncementStatus" class="status" aria-live="polite"></div>
+    </div>
     <div id="adminStatus" class="status" role="status" aria-live="polite"></div>
   `;
 
@@ -57,7 +74,7 @@
   const profilePage = documentRef.getElementById('page-profile');
   profilePage?.prepend(adminAccess);
 
-  const state = { profiles: {}, posts: {}, groups: {}, reports: {}, postTotal: 0, groupTotal: 0, reportsAvailable: false, refreshing: false, timer: null };
+  const state = { profiles: {}, posts: {}, groups: {}, reports: {}, postTotal: 0, groupTotal: 0, profilesAvailable: false, postsAvailable: false, groupsAvailable: false, reportsAvailable: false, refreshing: false, timer: null };
   const verifiedCache = new Map();
   const verifiedPending = new Map();
   const status = (message, kind = '') => {
@@ -128,6 +145,7 @@
       state.postTotal = 0;
       state.groupTotal = 0;
       state.reportsAvailable = false;
+      state.profilesAvailable = state.postsAvailable = state.groupsAvailable = false;
       for (const id of ['adminStats', 'adminUsersList', 'adminPostsList', 'adminReportsList']) {
         documentRef.getElementById(id)?.replaceChildren();
       }
@@ -138,7 +156,7 @@
     const card = documentRef.createElement('div');
     card.className = 'admin-stat-card';
     const number = documentRef.createElement('strong');
-    number.textContent = formatCount(value);
+    number.textContent = value === null || value === undefined ? '—' : formatCount(value);
     const title = documentRef.createElement('span');
     title.textContent = label;
     card.append(number, title);
@@ -152,21 +170,24 @@
 
   function renderStats() {
     const box = documentRef.getElementById('adminStats');
+    if (!box) return;
     const profiles = Object.values(state.profiles || {});
     const reports = Object.values(state.reports || {}).flatMap((byUser) => Object.values(byUser || {}));
     const newReports = reports.filter((item) => item?.status === 'new').length;
     const verified = profiles.filter((item) => item?.verified === true).length;
     box.replaceChildren(
-      statCard('الأعضاء', profiles.length),
-      statCard('المنشورات', state.postTotal),
-      statCard('المجموعات', state.groupTotal),
-      statCard('الحسابات الموثقة', verified),
-      statCard('بلاغات جديدة', newReports),
+      statCard('الأعضاء', state.profilesAvailable ? profiles.length : null, state.profilesAvailable ? 'حسابات المجتمع' : 'تعذر قراءة الحسابات'),
+      statCard('المنشورات', state.postsAvailable ? state.postTotal : null, state.postsAvailable ? 'إجمالي المنشورات' : 'تعذر قراءة المنشورات'),
+      statCard('المجموعات', state.groupsAvailable ? state.groupTotal : null, state.groupsAvailable ? 'مساحات المجتمع' : 'تعذر قراءة المجموعات'),
+      statCard('الحسابات الموثقة', state.profilesAvailable ? verified : null),
+      statCard('بلاغات جديدة', state.reportsAvailable ? newReports : null, state.reportsAvailable ? 'بانتظار المراجعة' : 'تعذر قراءة البلاغات'),
     );
   }
 
   function renderUsers() {
     const box = documentRef.getElementById('adminUsersList');
+    if (!box) return;
+    if (!state.profilesAvailable) { box.replaceChildren(app.emptyCard('تعذر تحميل الحسابات', 'جرّب تحديث اللوحة أو راجع صلاحيات قراءة /profiles.')); return; }
     const query = String(documentRef.getElementById('adminUserSearch').value || '').trim().toLowerCase();
     const rows = Object.entries(state.profiles || {})
       .map(([id, profile]) => ({ id, ...(profile || {}) }))
@@ -202,6 +223,8 @@
 
   function renderPosts() {
     const box = documentRef.getElementById('adminPostsList');
+    if (!box) return;
+    if (!state.postsAvailable) { box.replaceChildren(app.emptyCard('تعذر تحميل المنشورات', 'بقية الإحصاءات ستظل ظاهرة بصورة مستقلة.')); return; }
     const rows = Object.entries(state.posts || {})
       .map(([id, post]) => ({ id, ...(post || {}) }))
       .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))
@@ -287,23 +310,27 @@
     if (state.refreshing) return;
     state.refreshing = true;
     const refreshButton = documentRef.getElementById('adminRefreshButton');
-    refreshButton.disabled = true;
+    if (refreshButton) refreshButton.disabled = true;
     try {
-      const [profiles, postKeys, posts, groupKeys, reportsResult] = await Promise.all([
+      const results = await Promise.allSettled([
         app.dbGet('/profiles'),
         app.dbGet('/posts', { shallow: 'true' }),
         app.dbGet('/posts', { orderBy: '"createdAt"', limitToLast: '50' }),
         app.dbGet('/groups', { shallow: 'true' }),
-        app.dbGet('/reports').then((value) => ({ value })).catch((error) => ({ error })),
+        app.dbGet('/reports'),
       ]);
       if (!isAdmin()) return;
-      state.profiles = profiles || {};
-      state.posts = posts || {};
-      state.postTotal = Object.keys(postKeys || {}).length;
-      state.groups = groupKeys || {};
-      state.groupTotal = Object.keys(groupKeys || {}).length;
-      state.reportsAvailable = reportsResult.value !== undefined;
-      state.reports = reportsResult.value || {};
+      const value = (index) => results[index].status === 'fulfilled' ? results[index].value : null;
+      state.profilesAvailable = results[0].status === 'fulfilled';
+      state.postsAvailable = results[1].status === 'fulfilled' && results[2].status === 'fulfilled';
+      state.groupsAvailable = results[3].status === 'fulfilled';
+      state.reportsAvailable = results[4].status === 'fulfilled';
+      state.profiles = value(0) || {};
+      state.posts = value(2) || {};
+      state.postTotal = Object.keys(value(1) || {}).length;
+      state.groups = value(3) || {};
+      state.groupTotal = Object.keys(state.groups).length;
+      state.reports = value(4) || {};
       for (const [uid, user] of Object.entries(state.profiles)) {
         verifiedCache.set(uid, { value: user?.verified === true, at: Date.now() });
       }
@@ -311,14 +338,17 @@
       renderUsers();
       renderPosts();
       renderReports();
-      documentRef.getElementById('adminRefreshStamp').textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar')}${showMessage ? ' · تم التحديث' : ''}`;
-      status(state.reportsAvailable ? '' : 'الإحصاءات جاهزة، وبعض أدوات الإدارة غير متاحة حاليًا.', state.reportsAvailable ? '' : '');
+      const stamp = documentRef.getElementById('adminRefreshStamp');
+      if (stamp) stamp.textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar')}${showMessage ? ' · تم التحديث' : ''}`;
+      const failures = results.filter((item) => item.status === 'rejected').length;
+      status(failures ? `اكتمل التحديث مع تعذر قراءة ${formatCount(failures)} من مصادر البيانات؛ عُرضت بقية النتائج.` : '', failures ? 'error' : '');
+      if (failures) console.warn('admin dashboard partial data failure', results.map((item, i) => item.status === 'rejected' ? i : null).filter((i) => i !== null));
     } catch (error) {
       console.warn('admin dashboard', error?.firebaseCode || error?.message);
-      status('تعذر تحميل لوحة الإدارة الآن. تحقق من اتصال الإنترنت ثم حاول مجددًا.', 'error');
+      status('تعذر تحديث لوحة الإدارة الآن. تحقق من الاتصال ثم حاول مجددًا.', 'error');
     } finally {
       state.refreshing = false;
-      refreshButton.disabled = false;
+      if (refreshButton) refreshButton.disabled = false;
     }
   }
 
@@ -376,6 +406,58 @@
     }
   }
 
+  async function sendAdminBroadcast() {
+    if (!isAdmin()) return;
+    const title = String(documentRef.getElementById('adminBroadcastTitle')?.value || '').trim();
+    const text = String(documentRef.getElementById('adminBroadcastText')?.value || '').trim();
+    const button = documentRef.getElementById('adminBroadcastSend');
+    const feedback = documentRef.getElementById('adminBroadcastStatus');
+    if (text.length < 4) { if (feedback) { feedback.textContent = 'اكتب نصًا من 4 أحرف على الأقل.'; feedback.className = 'status error'; } return; }
+    if (!window.confirm('إرسال هذا الإشعار إلى مشتركي الإشعارات؟')) return;
+    if (button) button.disabled = true;
+    try {
+      const uid = app.getSession()?.user?.id;
+      const id = `b${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+      await app.dbPut(`/adminBroadcasts/${id}`, { title: (title || 'إشعار من إدارة moadbook').slice(0, 70), text: text.slice(0, 320), actorId: uid, actorName: 'إدارة moadbook', createdAt: Date.now() });
+      documentRef.getElementById('adminBroadcastTitle').value = '';
+      documentRef.getElementById('adminBroadcastText').value = '';
+      documentRef.getElementById('adminBroadcastCount').textContent = '0/320';
+      if (feedback) { feedback.textContent = 'تم حفظ البث. سيظهر للمشتركين عند استخدام التطبيق؛ تنبيهات الخلفية تحتاج خادم Web Push/FCM موثوقًا.'; feedback.className = 'status ok'; }
+    } catch (error) {
+      console.warn('admin broadcast', error?.firebaseCode || error?.message);
+      if (feedback) { feedback.textContent = 'تعذر حفظ الإشعار. تأكد من تطبيق قاعدة /adminBroadcasts المحدّثة.'; feedback.className = 'status error'; }
+    } finally { if (button) button.disabled = false; }
+  }
+
+  async function saveMillsAnnouncement() {
+    if (!isAdmin()) return;
+    const text = String(documentRef.getElementById('adminMillsAnnouncement')?.value || '').trim();
+    const enabled = documentRef.getElementById('adminMillsAnnouncementEnabled')?.checked === true;
+    const button = documentRef.getElementById('adminMillsAnnouncementSave');
+    const feedback = documentRef.getElementById('adminMillsAnnouncementStatus');
+    if (enabled && text.length < 4) { if (feedback) { feedback.textContent = 'اكتب إعلانًا قصيرًا قبل التفعيل.'; feedback.className = 'status error'; } return; }
+    if (button) button.disabled = true;
+    try {
+      await app.dbPut('/millsAnnouncement', { text: text.slice(0, 180), active: enabled, updatedAt: Date.now(), updatedBy: app.getSession()?.user?.id || '' });
+      if (feedback) { feedback.textContent = enabled ? 'تم حفظ الإعلان وتفعيله في ميلز.' : 'تم حفظ الإعداد وإيقاف عرض الإعلان.'; feedback.className = 'status ok'; }
+    } catch (error) {
+      console.warn('admin mills announcement', error?.firebaseCode || error?.message);
+      if (feedback) { feedback.textContent = 'تعذر حفظ الإعلان. تأكد من تطبيق قاعدة /millsAnnouncement المحدّثة.'; feedback.className = 'status error'; }
+    } finally { if (button) button.disabled = false; }
+  }
+
+  async function loadMillsAnnouncementForm() {
+    try {
+      const value = await app.dbGet('/millsAnnouncement');
+      const input = documentRef.getElementById('adminMillsAnnouncement');
+      const toggle = documentRef.getElementById('adminMillsAnnouncementEnabled');
+      if (input) input.value = String(value?.text || '');
+      if (toggle) toggle.checked = value?.active === true;
+    } catch (error) {
+      console.warn('admin mills announcement read', error?.firebaseCode || error?.message);
+    }
+  }
+
   const setRefreshTimer = () => {
     clearInterval(state.timer);
     state.timer = null;
@@ -393,6 +475,11 @@
   documentRef.getElementById('adminBackProfile').onclick = () => app.navigate('profile');
   documentRef.getElementById('adminRefreshButton').onclick = () => loadDashboard(true);
   documentRef.getElementById('adminUserSearch').addEventListener('input', renderUsers);
+  documentRef.getElementById('adminBroadcastSend').addEventListener('click', sendAdminBroadcast);
+  documentRef.getElementById('adminBroadcastText').addEventListener('input', (event) => { documentRef.getElementById('adminBroadcastCount').textContent = `${event.target.value.length}/320`; });
+  documentRef.getElementById('adminMillsAnnouncementSave').addEventListener('click', saveMillsAnnouncement);
+  adminNav.addEventListener('click', () => { void loadMillsAnnouncementForm(); });
+  documentRef.getElementById('adminProfileOpen').addEventListener('click', () => { void loadMillsAnnouncementForm(); });
 
   const authShell = documentRef.getElementById('appShell');
   if (authShell && 'MutationObserver' in window) {
