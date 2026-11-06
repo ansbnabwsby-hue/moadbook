@@ -43,9 +43,15 @@
       <div id="adminBroadcastStatus" class="status" aria-live="polite"></div>
     </div>
     <div class="card admin-card admin-tool-card">
-      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر كشريط نصي أعلى الفيديوهات. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
+      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر كشريط نصي أسفل رأس ميلز وقبل الفيديوهات. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
       <label class="label" for="adminMillsAnnouncement">نص الإعلان</label>
       <textarea id="adminMillsAnnouncement" class="field" maxlength="180" rows="2" placeholder="اكتب إعلانًا مختصرًا يظهر في ميلز…"></textarea>
+      <div class="admin-mills-preview-shell">
+        <div class="admin-mills-preview-heading"><strong>معاينة مباشرة</strong><small id="adminMillsAnnouncementPreviewHint">اكتب النص لترى شكله قبل الحفظ.</small></div>
+        <div id="adminMillsAnnouncementPreview" class="mills-announcement admin-mills-announcement-preview is-disabled" aria-label="معاينة شريط إعلان ميلز">
+          <div class="mills-announcement-clip"><span id="adminMillsAnnouncementPreviewText" lang="ar" dir="rtl"></span></div>
+        </div>
+      </div>
       <label class="admin-switch"><input id="adminMillsAnnouncementEnabled" type="checkbox"><span>تفعيل عرض الإعلان</span></label>
       <div class="admin-form-footer"><small class="muted">حد أقصى 180 حرفًا</small><button id="adminMillsAnnouncementSave" class="btn primary" type="button">حفظ الإعلان</button></div>
       <div id="adminMillsAnnouncementStatus" class="status" aria-live="polite"></div>
@@ -429,6 +435,29 @@
     } finally { if (button) button.disabled = false; }
   }
 
+  function updateMillsAnnouncementPreview() {
+    const input = documentRef.getElementById('adminMillsAnnouncement');
+    const toggle = documentRef.getElementById('adminMillsAnnouncementEnabled');
+    const preview = documentRef.getElementById('adminMillsAnnouncementPreview');
+    const label = documentRef.getElementById('adminMillsAnnouncementPreviewText');
+    const hint = documentRef.getElementById('adminMillsAnnouncementPreviewHint');
+    if (!preview || !label) return;
+    const text = String(input?.value || '').trim();
+    const enabled = toggle?.checked === true;
+    const hasText = text.length > 0;
+    label.textContent = text || 'سيظهر نص إعلانك المتحرك هنا…';
+    preview.classList.toggle('is-disabled', !enabled || !hasText);
+    label.style.animation = enabled && hasText ? '' : 'none';
+    if (hint) hint.textContent = enabled ? (hasText ? 'هكذا سيظهر في ميلز بعد الحفظ.' : 'اكتب النص أولًا لمعاينة الحركة.') : 'معاينة فقط؛ فعّل الإعلان ليظهر للمستخدمين.';
+    if (enabled && hasText) {
+      requestAnimationFrame(() => {
+        const clip = preview.querySelector('.mills-announcement-clip');
+        const width = clip?.clientWidth || preview.clientWidth || 320;
+        label.style.animationDuration = `${Math.max(10, (width + label.scrollWidth) / 45)}s`;
+      });
+    }
+  }
+
   async function saveMillsAnnouncement() {
     if (!isAdmin()) return;
     const text = String(documentRef.getElementById('adminMillsAnnouncement')?.value || '').trim();
@@ -443,6 +472,7 @@
       const verified = saved && saved.active === enabled && String(saved.text || '') === text.slice(0, 180);
       if (!verified) { if (feedback) { feedback.textContent = 'تم إرسال الحفظ لكن لم أستطع التحقق من قراءة الإعلان. راجع قواعد القراءة لمسار /millsAnnouncement.'; feedback.className = 'status error'; } return; }
       if (feedback) { feedback.textContent = enabled ? 'تم حفظ الإعلان والتحقق منه في Firebase. افتح ميلز لعرضه.' : 'تم حفظ الإعداد والتحقق من إيقاف الإعلان.'; feedback.className = 'status ok'; }
+      updateMillsAnnouncementPreview();
     } catch (error) {
       console.warn('admin mills announcement', error?.firebaseCode || error?.message);
       if (feedback) { feedback.textContent = 'تعذر حفظ الإعلان أو قراءته بعد الحفظ. تحقق من قواعد القراءة والكتابة لمسار /millsAnnouncement.'; feedback.className = 'status error'; }
@@ -457,6 +487,7 @@
       const toggle = documentRef.getElementById('adminMillsAnnouncementEnabled');
       if (input) input.value = String(value?.text || '');
       if (toggle) toggle.checked = value?.active === true;
+      updateMillsAnnouncementPreview();
       if (feedback) { feedback.textContent = ''; feedback.className = 'status'; }
     } catch (error) {
       console.warn('admin mills announcement read', error?.firebaseCode || error?.message);
@@ -484,6 +515,9 @@
   documentRef.getElementById('adminBroadcastSend').addEventListener('click', sendAdminBroadcast);
   documentRef.getElementById('adminBroadcastText').addEventListener('input', (event) => { documentRef.getElementById('adminBroadcastCount').textContent = `${event.target.value.length}/320`; });
   documentRef.getElementById('adminMillsAnnouncementSave').addEventListener('click', saveMillsAnnouncement);
+  documentRef.getElementById('adminMillsAnnouncement').addEventListener('input', updateMillsAnnouncementPreview);
+  documentRef.getElementById('adminMillsAnnouncementEnabled').addEventListener('change', updateMillsAnnouncementPreview);
+  updateMillsAnnouncementPreview();
   adminNav.addEventListener('click', () => { void loadMillsAnnouncementForm(); });
   documentRef.getElementById('adminProfileOpen').addEventListener('click', () => { void loadMillsAnnouncementForm(); });
 
