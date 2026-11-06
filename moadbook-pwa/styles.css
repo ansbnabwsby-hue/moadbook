@@ -497,3 +497,14 @@ html.dark-mode .chat-audio-preview{background:#292743;border-color:#4d4770}.dark
 html.dark-mode .chat-compose .chat-record-button{border-color:#514a7c;background:linear-gradient(145deg,#302a50,#242139);color:#d0c8ff;box-shadow:0 6px 15px #0003}html.dark-mode .mills-announcement{border-color:#65532d;background:linear-gradient(100deg,#332c1d,#36271f 50%,#332c1d);color:#f5e7bd}html.dark-mode .mills-announcement-badge{background:#9f7f34;color:#fff3cf}
 @media(prefers-reduced-motion:reduce){.chat-record-button,.chat-record-button svg,.chat-record-button:before{transition:none}.chat-record-button.recording,.chat-record-button.recording:before{animation:none}.mills-announcement-clip span{animation:none;white-space:normal;min-width:0;width:auto}}
 @media(max-width:520px){.chat-compose .chat-record-button{width:42px;height:42px;min-width:42px;flex-basis:42px;border-radius:14px}.mills-announcement{margin-inline:8px;padding:10px 11px}.mills-announcement-clip span{font-size:11px}}
+
+/* Mills announcement: compact standalone black ticker, no badge or icon */
+.mills-announcement{display:block;height:28px;min-height:28px;margin:7px 0 9px;padding:0 10px;overflow:hidden;border:0;border-radius:5px;background:#111;color:#fff;box-shadow:none}
+.mills-announcement.hidden{display:none}
+.mills-announcement-clip{position:relative;width:100%;height:100%;min-width:0;overflow:hidden;direction:ltr;white-space:nowrap}
+.mills-announcement-clip span{position:absolute;top:50%;right:0;left:auto;display:inline-block;width:max-content;min-width:0;max-width:none;transform:translateX(0) translateY(-50%);color:#fff;font-size:11px;font-weight:700;line-height:1.3;white-space:nowrap;animation:millsAnnouncementTravel var(--mills-announcement-duration,22s) linear infinite}
+.mills-announcement:hover .mills-announcement-clip span{animation-play-state:running}
+@keyframes millsAnnouncementTravel{from{transform:translateX(0) translateY(-50%)}to{transform:translateX(calc(-100% - 100vw)) translateY(-50%)}}
+@media(max-width:520px){.mills-announcement{height:26px;min-height:26px;margin:6px 8px 8px;padding-inline:9px}.mills-announcement-clip span{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.mills-announcement{height:auto;min-height:28px;padding-block:5px}.mills-announcement-clip{height:auto;overflow:visible;direction:rtl;white-space:normal}.mills-announcement-clip span{position:static;display:block;width:auto;max-width:100%;transform:none;animation:none;white-space:normal;line-height:1.5}}
+html.dark-mode .mills-announcement,.dark-mode .mills-announcement{background:#111;color:#fff;border:0;box-shadow:none}

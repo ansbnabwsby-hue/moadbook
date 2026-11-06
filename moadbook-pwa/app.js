@@ -444,7 +444,7 @@ async function loadNotificationRows(){
 }
 async function loadMillsAnnouncement(){
  const box=$('millsAnnouncement'),label=$('millsAnnouncementText');if(!box||!label||!session)return;
- try{const item=await dbGet('/millsAnnouncement');const text=String(item?.text||'').trim();const visible=item?.active===true&&text.length>0;label.textContent=text;box.classList.toggle('hidden',!visible);box.setAttribute('aria-hidden',visible?'false':'true')}
+ try{const item=await dbGet('/millsAnnouncement');const text=String(item?.text||'').trim();const visible=item?.active===true&&text.length>0;label.textContent=text;box.classList.toggle('hidden',!visible);box.setAttribute('aria-hidden',visible?'false':'true');const syncSpeed=()=>{const clip=box.querySelector('.mills-announcement-clip');if(!visible||!clip)return;const width=clip.clientWidth||window.innerWidth;label.style.animationDuration=`${Math.max(10,(width+label.scrollWidth)/45)}s`};requestAnimationFrame(syncSpeed);if(!box._tickerResizeBound){box._tickerResizeBound=syncSpeed;window.addEventListener('resize',syncSpeed,{passive:true})}}
  catch(error){box.classList.add('hidden');console.warn('mills announcement',error?.firebaseCode||error?.message)}
 }
 
