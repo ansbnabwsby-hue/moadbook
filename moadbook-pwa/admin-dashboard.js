@@ -43,7 +43,7 @@
       <div id="adminBroadcastStatus" class="status" aria-live="polite"></div>
     </div>
     <div class="card admin-card admin-tool-card">
-      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر في ميلز أسفل صف أيقونات الصوت والخروج، بحروف واضحة وحركة متصلة. يسمح بالنص فقط ولا يدعم إدخال HTML.</p></div></div>
+      <div class="admin-section-head"><div><span class="admin-tool-icon admin-ad-icon" aria-hidden="true">Aa</span><h2>إعلان متحرك في ميلز</h2><p class="muted">يظهر في ميلز أسفل صف أيقونات الصوت والخروج بخلفية شفافة. يتكرر النص بلا توقف، ومفتاح التفعيل/الإيقاف يُحفظ تلقائيًا. يسمح بالنص فقط.</p></div></div>
       <label class="label" for="adminMillsAnnouncement">نص الإعلان</label>
       <textarea id="adminMillsAnnouncement" class="field" maxlength="180" rows="2" placeholder="اكتب إعلانًا مختصرًا يظهر في ميلز…"></textarea>
       <div class="admin-mills-custom-grid">
@@ -426,6 +426,7 @@
     if (text.length < 4) { if (feedback) { feedback.textContent = 'اكتب نصًا من 4 أحرف على الأقل.'; feedback.className = 'status error'; } return; }
     if (!window.confirm('إرسال هذا الإشعار إلى مشتركي الإشعارات؟')) return;
     if (button) button.disabled = true;
+    if (toggleControl) toggleControl.disabled = true;
     try {
       const uid = app.getSession()?.user?.id;
       const id = `b${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
@@ -437,7 +438,7 @@
     } catch (error) {
       console.warn('admin broadcast', error?.firebaseCode || error?.message);
       if (feedback) { feedback.textContent = 'تعذر حفظ الإشعار. تأكد من تطبيق قاعدة /adminBroadcasts المحدّثة.'; feedback.className = 'status error'; }
-    } finally { if (button) button.disabled = false; }
+    } finally { if (button) button.disabled = false; if (toggleControl) toggleControl.disabled = false; }
   }
 
   function updateMillsAnnouncementPreview() {
@@ -471,7 +472,7 @@
       requestAnimationFrame(() => {
         const clip = preview.querySelector('.mills-announcement-clip');
         const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[speed];
-        label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 14) / pixelsPerSecond)}s`;
+        label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 6) / pixelsPerSecond)}s`;
       });
     }
   }
@@ -486,6 +487,7 @@
     const speed = ['slow', 'normal', 'fast'].includes(documentRef.getElementById('adminMillsAnnouncementSpeed')?.value) ? documentRef.getElementById('adminMillsAnnouncementSpeed').value : 'normal';
     const size = ['small', 'medium', 'large'].includes(documentRef.getElementById('adminMillsAnnouncementSize')?.value) ? documentRef.getElementById('adminMillsAnnouncementSize').value : 'small';
     const button = documentRef.getElementById('adminMillsAnnouncementSave');
+    const toggleControl = documentRef.getElementById('adminMillsAnnouncementEnabled');
     const feedback = documentRef.getElementById('adminMillsAnnouncementStatus');
     if (enabled && text.length < 4) { if (feedback) { feedback.textContent = 'اكتب إعلانًا قصيرًا قبل التفعيل.'; feedback.className = 'status error'; } return; }
     if (button) button.disabled = true;
@@ -545,9 +547,12 @@
   documentRef.getElementById('adminUserSearch').addEventListener('input', renderUsers);
   documentRef.getElementById('adminBroadcastSend').addEventListener('click', sendAdminBroadcast);
   documentRef.getElementById('adminBroadcastText').addEventListener('input', (event) => { documentRef.getElementById('adminBroadcastCount').textContent = `${event.target.value.length}/320`; });
-  documentRef.getElementById('adminMillsAnnouncementSave').addEventListener('click', saveMillsAnnouncement);
+  documentRef.getElementById('adminMillsAnnouncementSave').addEventListener('click', () => { void saveMillsAnnouncement(); });
   documentRef.getElementById('adminMillsAnnouncement').addEventListener('input', updateMillsAnnouncementPreview);
-  documentRef.getElementById('adminMillsAnnouncementEnabled').addEventListener('change', updateMillsAnnouncementPreview);
+  documentRef.getElementById('adminMillsAnnouncementEnabled').addEventListener('change', () => {
+    updateMillsAnnouncementPreview();
+    void saveMillsAnnouncement();
+  });
   ['adminMillsAnnouncementTheme', 'adminMillsAnnouncementSpeed', 'adminMillsAnnouncementSize'].forEach((id) => documentRef.getElementById(id).addEventListener('change', updateMillsAnnouncementPreview));
   updateMillsAnnouncementPreview();
   adminNav.addEventListener('click', () => { void loadMillsAnnouncementForm(); });

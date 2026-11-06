@@ -478,7 +478,7 @@ async function loadMillsAnnouncement() {
       const clip = box.querySelector('.mills-announcement-clip');
       if (box.dataset.announcementState !== 'active' || !clip) return;
       const pixelsPerSecond = { slow: 28, normal: 45, fast: 68 }[box.dataset.speed] || 45;
-      label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 14) / pixelsPerSecond)}s`;
+      label.style.animationDuration = `${Math.max(6, (label.scrollWidth / 2 + 6) / pixelsPerSecond)}s`;
     };
     box._tickerSyncSpeed = syncSpeed;
     if (!box._tickerResizeBound) {
