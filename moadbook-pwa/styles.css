@@ -508,3 +508,8 @@ html.dark-mode .chat-compose .chat-record-button{border-color:#514a7c;background
 @media(max-width:520px){.mills-announcement{height:26px;min-height:26px;margin:6px 8px 8px;padding-inline:9px}.mills-announcement-clip span{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.mills-announcement{height:auto;min-height:28px;padding-block:5px}.mills-announcement-clip{height:auto;overflow:visible;direction:rtl;white-space:normal}.mills-announcement-clip span{position:static;display:block;width:auto;max-width:100%;transform:none;animation:none;white-space:normal;line-height:1.5}}
 html.dark-mode .mills-announcement,.dark-mode .mills-announcement{background:#111;color:#fff;border:0;box-shadow:none}
+
+
+/* Keep the Mills ticker above the full-screen absolute video feed, clear of the exit control. */
+body.mills-fullscreen #page-mills #millsAnnouncement{position:absolute;z-index:65;top:calc(20px + env(safe-area-inset-top));inset-inline-start:12px;inset-inline-end:88px;width:auto;margin:0;pointer-events:none}
+@media(max-width:380px){body.mills-fullscreen #page-mills #millsAnnouncement{inset-inline-start:8px;inset-inline-end:82px}}
