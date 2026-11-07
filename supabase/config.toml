@@ -1,0 +1,5 @@
+project_id = "suttmrgmxusyfjybnfek"
+
+[functions.moadbook-games-api]
+verify_jwt = false
+import_map = "./functions/moadbook-games-api/deno.json"

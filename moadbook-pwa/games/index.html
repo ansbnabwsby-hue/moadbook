@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <title>MOADBOOK GAMES — عالم الألعاب والتحديات</title>
+  <link rel="icon" href="../moadbook-icon.png">
+  <link rel="stylesheet" href="./shared/games.css">
+</head>
+<body data-page="home">
+  <header class="mg-topbar">
+    <a class="mg-back-link" href="../index.html" aria-label="العودة إلى Moadbook">‹ <span>moadbook</span></a>
+    <a class="mg-wordmark" href="./" aria-label="MOADBOOK GAMES، الصفحة الرئيسية"><span class="mg-mark">M</span><span>MOADBOOK <b>GAMES</b></span></a>
+    <button id="mgRefresh" class="mg-icon-btn" type="button" aria-label="تحديث البيانات" title="تحديث">↻</button>
+  </header>
+
+  <main class="mg-main">
+    <section class="mg-hero">
+      <div class="mg-hero-orb mg-orb-a" aria-hidden="true"></div>
+      <div class="mg-hero-orb mg-orb-b" aria-hidden="true"></div>
+      <div class="mg-hero-copy">
+        <span class="mg-eyebrow">Moadbook Arcade</span>
+        <h1>عالم الألعاب<br><em>والتحديات</em></h1>
+        <p>جولات قصيرة، إنجازات حقيقية، وتحدٍّ جديد كل يوم.</p>
+        <div id="mgIdentity" class="mg-identity" aria-live="polite">جارٍ التحقق من جلسة Moadbook…</div>
+      </div>
+      <div class="mg-hero-art" aria-hidden="true"><div class="mg-art-disc"><span>✦</span><i></i><b></b><small>PLAY</small></div></div>
+    </section>
+
+    <div id="mgNotice" class="mg-notice" role="status" aria-live="polite" hidden></div>
+    <nav class="mg-tabs" aria-label="أقسام الألعاب">
+      <button class="mg-tab active" type="button" data-view="discover">اكتشف</button>
+      <button class="mg-tab" type="button" data-view="leaderboard">الترتيب</button>
+      <button class="mg-tab" type="button" data-view="profile">ملفي</button>
+      <button id="mgAdminTab" class="mg-tab" type="button" data-view="admin" hidden>الإدارة</button>
+    </nav>
+
+    <section class="mg-view active" data-view-panel="discover">
+      <div class="mg-section-head"><div><span class="mg-eyebrow">اختَر جولتك</span><h2>ألعاب مميزة</h2></div><span class="mg-section-mark">01 / PLAY</span></div>
+      <div id="mgFeaturedGames" class="mg-featured-grid" aria-live="polite"></div>
+      <div class="mg-section-head mg-subhead"><div><span class="mg-eyebrow">متعة على مقاسك</span><h2>كل الألعاب</h2></div><span id="mgGameCount" class="mg-count"></span></div>
+      <div id="mgAllGames" class="mg-games-grid"></div>
+      <div class="mg-dashboard-grid">
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">لك وحدك</span><h2>ملخصك</h2></div><a href="#profile" class="mg-text-link" data-open-view="profile">التفاصيل ←</a></div><div id="mgQuickStats" class="mg-stats-grid"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">ينتهي مع اليوم</span><h2>التحديات اليومية</h2></div><span class="mg-live-dot">مباشر</span></div><div id="mgDailyChallenges" class="mg-challenges"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">إنجازاتك</span><h2>شارات جمعتها</h2></div><a href="#profile" class="mg-text-link" data-open-view="profile">عرض الكل ←</a></div><div id="mgAchievementPreview" class="mg-achievement-strip"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">أفضل اللاعبين</span><h2>الترتيب العام</h2></div><a href="#leaderboard" class="mg-text-link" data-open-view="leaderboard">المزيد ←</a></div><div id="mgLeaderboardPreview" class="mg-leaderboard-preview"></div></section>
+      </div>
+      <section class="mg-panel mg-recent-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">تابع من حيث توقفت</span><h2>لعبت مؤخرًا</h2></div></div><div id="mgRecentGames" class="mg-recent-grid"></div></section>
+    </section>
+
+    <section class="mg-view" data-view-panel="leaderboard" hidden>
+      <div class="mg-section-head"><div><span class="mg-eyebrow">نتائج موثقة من الخادم</span><h2>لوحة الترتيب</h2></div></div>
+      <div class="mg-filter-row"><label>الترتيب<select id="mgLeaderboardGame" class="mg-select"><option value="overall">عام — نقاط الإنجازات</option></select></label><label>الفترة<select id="mgLeaderboardPeriod" class="mg-select"><option value="all-time">كل الوقت</option><option value="weekly">هذا الأسبوع</option><option value="monthly">هذا الشهر</option></select></label><button id="mgLeaderboardLoad" class="mg-button mg-button-small" type="button">تحديث</button></div>
+      <div id="mgLeaderboard" class="mg-panel mg-leaderboard-table" aria-live="polite"></div>
+    </section>
+
+    <section class="mg-view" data-view-panel="profile" hidden>
+      <div class="mg-section-head"><div><span class="mg-eyebrow">هوية اللاعب</span><h2>ملفي في الألعاب</h2></div></div>
+      <div id="mgProfile" class="mg-profile-layout"></div>
+      <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">رحلتك</span><h2>آخر الجولات</h2></div></div><div id="mgRecentScores" class="mg-recent-scores"></div></section>
+    </section>
+
+    <section class="mg-view" data-view-panel="admin" hidden>
+      <div class="mg-section-head"><div><span class="mg-eyebrow">منطقة خاصة</span><h2>إدارة الألعاب</h2></div></div>
+      <div id="mgAdminStatus" class="mg-notice" role="status" aria-live="polite"></div>
+      <div id="mgAdminStats" class="mg-stats-grid" aria-label="إحصاءات الألعاب"></div>
+      <div class="mg-admin-grid">
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">الكتالوج</span><h2>الألعاب والإصدارات</h2></div></div><div id="mgAdminGames" class="mg-admin-list"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">مكافآت غير مالية</span><h2>الإنجازات والنقاط</h2></div></div><div id="mgAdminAchievements" class="mg-admin-list"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">محتوى الاختبار</span><h2>إضافة سؤال موثّق</h2></div></div><form id="mgQuestionForm" class="mg-form"><label>السؤال<textarea name="prompt" required maxlength="260"></textarea></label><label>اسم الفئة<input name="category" value="رياضيات ومنطق" maxlength="40" required></label><label>معرّف الفئة<select name="categoryId"><option value="math">رياضيات</option><option value="science">علوم</option><option value="geography">جغرافيا</option><option value="history">تاريخ</option><option value="technology">تقنية</option><option value="culture">ثقافة وفنون</option></select></label><label>الصعوبة<select name="difficulty"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select></label><div class="mg-form-options"><label>الخيار 1<input name="option0" required maxlength="100"></label><label>الخيار 2<input name="option1" required maxlength="100"></label><label>الخيار 3<input name="option2" required maxlength="100"></label><label>الخيار 4<input name="option3" required maxlength="100"></label></div><label>رقم الإجابة الصحيحة<select name="correctIndex"><option value="0">الخيار 1</option><option value="1">الخيار 2</option><option value="2">الخيار 3</option><option value="3">الخيار 4</option></select></label><label>التفسير<input name="explanation" maxlength="240" required></label><label>عنوان المصدر<input name="sourceTitle" maxlength="120" required></label><label>رابط المصدر HTTPS<input name="sourceUrl" type="url" placeholder="https://…" maxlength="500" required></label><label>ملاحظة التحقق / موضع الدليل<textarea name="sourceEvidence" maxlength="500" required></textarea></label><button class="mg-button" type="submit">حفظ السؤال الموثّق</button></form><div id="mgAdminQuestions" class="mg-admin-list"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">مراجعة النتائج</span><h2>نتائج تحتاج مراجعة</h2></div></div><div id="mgSuspiciousScores" class="mg-admin-list"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><span class="mg-eyebrow">تحدي اليوم</span><h2>ضبط الهدف</h2></div></div><form id="mgChallengeForm" class="mg-form"><label>اللعبة<select name="gameId" required></select></label><label>نوع الهدف<select name="metric"><option value="min_score">النتيجة الدنيا</option><option value="levels_completed">المستويات المكتملة</option><option value="correct_answers">الإجابات الصحيحة</option><option value="lines_cleared">الصفوف والأعمدة الممسوحة</option><option value="foods_eaten">الطعام المجموع</option><option value="obstacles_dodged">العوائق المتجاوزة</option><option value="moves">الحركات</option><option value="rounds_completed">الجولات المكتملة</option></select></label><label>الهدف<input name="target" type="number" min="1" max="1000000" value="5" required></label><label>نقاط المكافأة<input name="rewardPoints" type="number" min="0" max="500" value="20" required></label><label>العنوان<textarea name="title" maxlength="120" required></textarea></label><button class="mg-button" type="submit">حفظ تحدي اليوم</button></form></section>
+      </div>
+    </section>
+
+    <footer class="mg-footer"><span>MOADBOOK GAMES</span><span>النقاط افتراضية، غير مالية، ولا ترتبط برصيد حسابك.</span></footer>
+  </main>
+  <script src="../firebase-config.js"></script>
+  <script src="../supabase-config.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

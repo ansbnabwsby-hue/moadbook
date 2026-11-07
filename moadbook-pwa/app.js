@@ -100,7 +100,7 @@ async function boot(){
  session=null;profile=null;clearStoredSession();showScreen('welcome');
 }
 function showPage(id){if(currentPage==='messages'&&id!=='messages'){setChatFullscreen(false);stopTypingPulse();stopChatPresence()}document.body.classList.toggle('mills-fullscreen',id==='mills');document.body.classList.toggle('public-chat-fullscreen',id==='groups');currentPage=id;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===`page-${id}`));const navPage=id==='settings'?'profile':id;document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active',el.dataset.page===navPage));if(id==='friends')loadFriends();if(id==='groups')loadPublicChat();if(id==='profile')loadProfile();if(id==='settings')loadSettings();if(id==='messages'){loadChats();if(activeChat&&!$('chatWindow').classList.contains('hidden'))startChatPresence()}if(id==='notifications')loadNotifications();if(id==='mills')loadMills()}
-function navigate(page){if(page==='home'&&currentPage==='home'){window.scrollTo({top:0,behavior:'smooth'});return}showPage(page);window.scrollTo({top:0,behavior:'smooth'})}
+function navigate(page){if(page==='games'){window.location.assign('games/');return}if(page==='home'&&currentPage==='home'){window.scrollTo({top:0,behavior:'smooth'});return}showPage(page);window.scrollTo({top:0,behavior:'smooth'})}
 function friendshipKey(a,b){return[a,b].sort().join('__')}
 function httpsUrl(value){try{const u=new URL(String(value||'').trim());return u.protocol==='https:'?u.href:''}catch{return ''}}
 

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="جولة Moadbook Games — تجربة عربية قصيرة وآمنة.">
+  <title>اللعب — MOADBOOK GAMES</title>
+  <link rel="icon" href="../moadbook-icon.png">
+  <link rel="stylesheet" href="./shared/games.css">
+</head>
+<body data-page="play">
+  <header class="mg-topbar">
+    <a class="mg-back-link" id="mgExit" href="./" aria-label="العودة إلى الألعاب">‹ <span>الألعاب</span></a>
+    <a class="mg-wordmark" href="./" aria-label="العودة إلى مركز الألعاب"><span class="mg-mark">M</span><span>MOADBOOK <b>GAMES</b></span></a>
+    <button id="mgFullscreen" class="mg-icon-btn" type="button" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>
+  </header>
+  <main class="mg-play-main">
+    <header class="mg-play-header">
+      <div><span class="mg-eyebrow">جولة موثّقة</span><h1 id="mgPlayTitle" class="mg-play-title">جارٍ تحميل اللعبة…</h1><p id="mgPlayDescription" class="mg-play-copy"></p></div>
+      <div id="mgPlayStats" class="mg-play-stats" aria-live="polite"><div class="mg-play-stat"><span>النقاط</span><strong id="mgPlayScore">0</strong></div><div class="mg-play-stat"><span>أفضل نتيجة</span><strong id="mgPlayBest">—</strong></div></div>
+    </header>
+    <p id="mgPlayStatus" class="mg-notice" role="status" aria-live="polite" hidden></p>
+    <div class="mg-play-controls" aria-label="عناصر التحكم العامة">
+      <button id="mgPause" class="mg-control-btn" type="button" disabled>إيقاف مؤقت</button>
+      <button id="mgResume" class="mg-control-btn" type="button" hidden>استئناف</button>
+      <button id="mgRestart" class="mg-control-btn" type="button" disabled>إعادة الجولة</button>
+      <button id="mgPlayFullscreen" class="mg-control-btn" type="button">ملء الشاشة</button>
+      <a class="mg-control-btn" href="./">خروج</a>
+    </div>
+    <section id="mgGameStage" class="mg-play-shell mg-game-stage" aria-label="منطقة اللعب">
+      <div id="mgGameRoot" class="mg-module-root"></div>
+    </section>
+    <section id="mgFinishBanner" class="mg-finish-banner" aria-live="polite" hidden></section>
+    <p class="mg-play-privacy">نتائج اللعب الرسمي تُحسب في الخادم. الرصيد افتراضي للّعب فقط ولا يساوي مالًا أو قيمة قابلة للسحب.</p>
+  </main>
+  <script src="../firebase-config.js"></script>
+  <script src="../supabase-config.js"></script>
+  <script type="module" src="./play.js"></script>
+</body>
+</html>

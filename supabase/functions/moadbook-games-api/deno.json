@@ -1,0 +1,13 @@
+{
+  "imports": {
+    "jose": "https://deno.land/x/jose@v5.9.6/index.ts"
+  },
+  "compilerOptions": {
+    "strict": true
+  },
+  "fmt": {
+    "lineWidth": 100,
+    "semiColons": true,
+    "singleQuote": false
+  }
+}
