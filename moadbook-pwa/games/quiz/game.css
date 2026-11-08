@@ -1,0 +1,64 @@
+.mg-quiz-shell {
+  --mq-ink: #f4f7ff;
+  --mq-muted: #bcc7dc;
+  --mq-panel: #15213a;
+  --mq-edge: #354766;
+  --mq-accent: #66e0c2;
+  --mq-accent-ink: #08251f;
+  --mq-danger: #ffcf72;
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: clamp(14px, 4vw, 30px);
+  color: var(--mq-ink);
+  direction: rtl;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.55;
+}
+.mg-quiz-shell *, .mg-quiz-shell *::before, .mg-quiz-shell *::after { box-sizing: inherit; }
+.mg-quiz-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.mg-quiz-title { margin: 0; font-size: clamp(1.45rem, 5vw, 2rem); letter-spacing: -.03em; }
+.mg-quiz-best { padding: 7px 12px; border: 1px solid var(--mq-edge); border-radius: 999px; color: var(--mq-muted); font-size: .88rem; }
+.mg-quiz-live { min-height: 1.5em; margin: 0 0 10px; color: var(--mq-muted); font-size: .9rem; }
+.mg-quiz-live[data-kind="error"] { color: #ffb4ae; }
+.mg-quiz-live[data-kind="success"] { color: var(--mq-accent); }
+.mg-quiz-content { min-height: 300px; }
+.mg-quiz-panel { display: grid; gap: 18px; padding: clamp(18px, 5vw, 34px); border: 1px solid var(--mq-edge); border-radius: 24px; background: radial-gradient(ellipse at top left, #203758 0, transparent 50%), var(--mq-panel); box-shadow: 0 18px 55px #050b1766; }
+.mg-quiz-eyebrow { margin: 0; color: var(--mq-accent); font-size: .9rem; font-weight: 750; }
+.mg-quiz-heading { margin: 0; font-size: clamp(1.5rem, 5vw, 2rem); }
+.mg-quiz-copy { margin: 0; color: var(--mq-ink); }
+.mg-quiz-muted { color: var(--mq-muted); font-size: .92rem; }
+.mg-quiz-field { display: grid; gap: 7px; color: var(--mq-muted); font-size: .92rem; }
+.mg-quiz-select { width: 100%; min-height: 48px; padding: 10px 14px; border: 1px solid #607493; border-radius: 12px; background: #0c172b; color: var(--mq-ink); font: inherit; }
+.mg-quiz-button, .mg-quiz-option { font: inherit; cursor: pointer; touch-action: manipulation; }
+.mg-quiz-button { min-height: 52px; padding: 12px 22px; border: 0; border-radius: 14px; font-weight: 800; }
+.mg-quiz-primary { background: var(--mq-accent); color: var(--mq-accent-ink); }
+.mg-quiz-button:hover, .mg-quiz-option:hover { filter: brightness(1.08); }
+.mg-quiz-button:focus-visible, .mg-quiz-option:focus-visible, .mg-quiz-select:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.mg-quiz-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.mg-quiz-pill { padding: 5px 11px; border: 1px solid var(--mq-edge); border-radius: 999px; color: var(--mq-muted); font-size: .83rem; }
+.mg-quiz-progress-track { height: 9px; overflow: hidden; border-radius: 99px; background: #081326; }
+.mg-quiz-progress-fill { height: 100%; border-radius: inherit; background: var(--mq-accent); transition: width .25s ease; }
+.mg-quiz-timer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mg-quiz-timer-label { color: var(--mq-muted); font-size: .9rem; }
+.mg-quiz-timer { font-variant-numeric: tabular-nums; }
+.mg-quiz-urgent { color: var(--mq-danger); }
+.mg-quiz-question-text { margin: 0; font-size: clamp(1.25rem, 4vw, 1.7rem); line-height: 1.45; }
+.mg-quiz-options { display: grid; gap: 10px; }
+.mg-quiz-option { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 12px 14px; border: 1px solid #50627f; border-radius: 14px; background: #101c31; color: var(--mq-ink); text-align: right; }
+.mg-quiz-option:disabled { opacity: .72; cursor: default; }
+.mg-quiz-option-key { display: grid; flex: 0 0 30px; width: 30px; height: 30px; place-items: center; border-radius: 9px; background: #253653; color: var(--mq-accent); font-weight: 800; }
+.mg-quiz-option-label { overflow-wrap: anywhere; }
+.mg-quiz-feedback { min-height: 1.5em; margin: 0; font-weight: 750; }
+.mg-quiz-feedback[data-kind="correct"] { color: var(--mq-accent); }
+.mg-quiz-feedback[data-kind="wrong"] { color: var(--mq-danger); }
+.mg-quiz-score { color: var(--mq-accent); font-size: clamp(3.5rem, 16vw, 6rem); font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) {
+  .mg-quiz-header { align-items: flex-start; flex-direction: column; }
+  .mg-quiz-best { font-size: .82rem; }
+  .mg-quiz-panel { border-radius: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mg-quiz-progress-fill { transition: none; }
+  .mg-quiz-panel, .mg-quiz-option, .mg-quiz-button { scroll-behavior: auto; }
+}

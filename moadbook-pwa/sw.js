@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "moadbook-pwa-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v61`;
+const CACHE_NAME = `${CACHE_PREFIX}v62`;
 const APP_ROOT = new URL("./", self.registration.scope);
 const SCOPE_PATH = APP_ROOT.pathname;
 const SHELL_URLS = [
@@ -9,12 +9,29 @@ const SHELL_URLS = [
   new URL("./moadbook-icon.png", APP_ROOT).href,
   new URL("./styles.css?v=61", APP_ROOT).href,
   new URL("./admin.css?v=61", APP_ROOT).href,
-  new URL("./app.js?v=61", APP_ROOT).href,
+  new URL("./app.js?v=62", APP_ROOT).href,
   new URL("./admin-dashboard.js?v=61", APP_ROOT).href,
   new URL("./post-export.js?v=61", APP_ROOT).href,
   new URL("./firebase-config.js", APP_ROOT).href,
   new URL("./supabase-config.js", APP_ROOT).href,
   new URL("./google-auth.js", APP_ROOT).href,
+  new URL("./games/index.html", APP_ROOT).href,
+  new URL("./games/play.html", APP_ROOT).href,
+  new URL("./games/app.js", APP_ROOT).href,
+  new URL("./games/play.js", APP_ROOT).href,
+  new URL("./games/shared/api.js", APP_ROOT).href,
+  new URL("./games/shared/catalog.js", APP_ROOT).href,
+  new URL("./games/shared/games.css", APP_ROOT).href,
+  new URL("./games/runner/index.html", APP_ROOT).href,
+  new URL("./games/runner/game.js", APP_ROOT).href,
+  new URL("./games/memory/index.html", APP_ROOT).href,
+  new URL("./games/memory/game.js", APP_ROOT).href,
+  new URL("./games/quiz/index.html", APP_ROOT).href,
+  new URL("./games/quiz/game.js", APP_ROOT).href,
+  new URL("./games/block-puzzle/index.html", APP_ROOT).href,
+  new URL("./games/block-puzzle/game.js", APP_ROOT).href,
+  new URL("./games/snake/index.html", APP_ROOT).href,
+  new URL("./games/snake/game.js", APP_ROOT).href,
 ];
 
 self.addEventListener("install", (event) => {
@@ -43,10 +60,12 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin || !url.pathname.startsWith(SCOPE_PATH)) return;
 
   if (request.mode === "navigate") {
+    const cachedRoute = async () => await caches.match(request, { ignoreSearch: true })
+      ?? await caches.match(new URL("./index.html", APP_ROOT).href);
     event.respondWith(
       fetch(request)
-        .then((response) => response.ok ? response : caches.match(new URL("./index.html", APP_ROOT).href))
-        .catch(() => caches.match(new URL("./index.html", APP_ROOT).href))
+        .then((response) => response.ok ? response : cachedRoute())
+        .catch(cachedRoute)
         .then((response) => response ?? Response.error()),
     );
     return;

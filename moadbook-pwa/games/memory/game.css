@@ -1,0 +1,57 @@
+.mg-memory {
+  --mg-memory-ink: #15263b;
+  --mg-memory-muted: #52647b;
+  --mg-memory-accent: #075e57;
+  --mg-memory-accent-dark: #064840;
+  --mg-memory-surface: #ffffff;
+  --mg-memory-line: #b7c7d5;
+  color: var(--mg-memory-ink);
+  direction: rtl;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  margin-inline: auto;
+  max-width: 780px;
+  padding: clamp(16px, 4vw, 32px);
+}
+
+.mg-memory *, .mg-memory *::before, .mg-memory *::after { box-sizing: border-box; }
+.mg-memory-header { text-align: center; }
+.mg-memory-eyebrow { color: var(--mg-memory-accent); font-size: .9rem; font-weight: 800; margin: 0 0 4px; }
+.mg-memory-title { font-size: clamp(1.7rem, 6vw, 2.5rem); line-height: 1.2; margin: 0; }
+.mg-memory-instructions { color: var(--mg-memory-muted); font-size: 1rem; line-height: 1.65; margin: 12px auto 20px; max-width: 570px; text-align: center; }
+.mg-memory-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; }
+.mg-memory-stat { background: #edf4f6; border: 1px solid var(--mg-memory-line); border-radius: 14px; min-width: 0; padding: 10px 8px; text-align: center; }
+.mg-memory-stat-label, .mg-memory-stat-value { display: block; }
+.mg-memory-stat-label { color: var(--mg-memory-muted); font-size: .82rem; font-weight: 650; }
+.mg-memory-stat-value { font-size: clamp(.95rem, 3vw, 1.2rem); margin-top: 3px; }
+.mg-memory-controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.mg-memory-button { appearance: none; border: 2px solid transparent; border-radius: 12px; cursor: pointer; font: inherit; font-size: 1rem; font-weight: 750; min-height: 50px; padding: 10px 20px; touch-action: manipulation; }
+.mg-memory-button-primary { background: var(--mg-memory-accent); color: #fff; }
+.mg-memory-button-primary:hover { background: var(--mg-memory-accent-dark); }
+.mg-memory-button-secondary { background: #fff; border-color: var(--mg-memory-accent); color: var(--mg-memory-accent-dark); }
+.mg-memory-button:disabled { cursor: not-allowed; opacity: .58; }
+.mg-memory-button:focus-visible, .mg-memory-card:focus-visible { outline: 4px solid #e59d22; outline-offset: 3px; }
+.mg-memory-board { background: #e8f0f2; border: 1px solid var(--mg-memory-line); border-radius: 18px; display: grid; gap: clamp(8px, 2vw, 14px); grid-template-columns: repeat(4, minmax(0, 1fr)); min-height: 225px; padding: clamp(12px, 3vw, 20px); }
+.mg-memory-card { align-items: center; appearance: none; aspect-ratio: 1 / 1; background: #075e57; border: 2px solid #034942; border-radius: 15px; color: #fff; cursor: pointer; display: flex; font: inherit; font-size: clamp(1.5rem, 9vw, 3rem); font-weight: 800; justify-content: center; min-height: 52px; min-width: 0; touch-action: manipulation; transition: transform .16s ease, background-color .16s ease; }
+.mg-memory-card:hover:not(:disabled) { background: #08756b; transform: translateY(-2px); }
+.mg-memory-card-open { background: #fff; border-color: #667b8c; color: #123e63; }
+.mg-memory-card-matched { background: #d9f2df; border-color: #287344; color: #174c2b; cursor: default; }
+.mg-memory-board-empty { align-items: center; display: flex; justify-content: center; }
+.mg-memory-panel { max-width: 480px; padding: 18px 12px; text-align: center; }
+.mg-memory-panel-title { font-size: clamp(1.3rem, 5vw, 1.8rem); margin: 0 0 8px; }
+.mg-memory-panel-copy { color: var(--mg-memory-muted); line-height: 1.7; margin: 0 0 18px; }
+.mg-memory-message { color: var(--mg-memory-muted); font-size: .95rem; min-height: 1.6em; padding: 10px 4px 0; text-align: center; }
+.mg-memory-board-paused::after { color: var(--mg-memory-ink); content: "متوقفة مؤقتًا"; font-weight: 800; grid-column: 1 / -1; grid-row: 1 / -1; place-self: center; }
+
+@media (max-width: 480px) {
+  .mg-memory { padding: 14px; }
+  .mg-memory-stats { gap: 6px; }
+  .mg-memory-stat { border-radius: 10px; padding: 8px 4px; }
+  .mg-memory-stat-label { font-size: .72rem; }
+  .mg-memory-board { gap: 8px; padding: 10px; }
+  .mg-memory-card { border-radius: 12px; }
+  .mg-memory-button { flex: 1 1 130px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-memory *, .mg-memory *::before, .mg-memory *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

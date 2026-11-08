@@ -1,0 +1,60 @@
+.mg-runner-shell {
+  --mr-ink: #f3f7fa;
+  --mr-muted: #c4d4df;
+  --mr-accent: #54d5c0;
+  --mr-gold: #f4c76b;
+  box-sizing: border-box;
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: clamp(14px, 3vw, 28px);
+  color: var(--mr-ink);
+  background: #0c1d33;
+  border: 1px solid #28435d;
+  border-radius: 22px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  direction: rtl;
+  text-align: right;
+  box-shadow: 0 18px 55px #07132166;
+}
+.mg-runner-shell *, .mg-runner-shell *::before, .mg-runner-shell *::after { box-sizing: border-box; }
+.mg-runner-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+.mg-runner-eyebrow { margin: 0 0 3px; color: var(--mr-accent); font-size: .84rem; font-weight: 700; }
+.mg-runner-title { margin: 0; font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.2; }
+.mg-runner-stats { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+.mg-runner-stats span { padding: 8px 12px; color: var(--mr-muted); background: #172e48; border: 1px solid #2a4661; border-radius: 12px; font-size: .9rem; white-space: nowrap; }
+.mg-runner-stats b { color: var(--mr-gold); font-variant-numeric: tabular-nums; }
+.mg-runner-stage { position: relative; overflow: hidden; min-height: 250px; aspect-ratio: 2 / 1; background: #10264a; border: 1px solid #41647c; border-radius: 16px; touch-action: manipulation; }
+.mg-runner-canvas { display: block; width: 100%; height: 100%; min-height: 250px; touch-action: manipulation; }
+.mg-runner-overlay, .mg-runner-paused { position: absolute; inset: 0; display: grid; place-items: center; padding: 18px; background: #071321a8; }
+.mg-runner-overlay[hidden], .mg-runner-paused[hidden] { display: none; }
+.mg-runner-card { width: min(100%, 420px); padding: clamp(18px, 4vw, 28px); text-align: center; background: #10243cf2; border: 1px solid #42637a; border-radius: 18px; box-shadow: 0 14px 44px #0007; }
+.mg-runner-card h2 { margin: 0 0 8px; font-size: clamp(1.25rem, 3vw, 1.65rem); }
+.mg-runner-card p, .mg-runner-paused p { margin: 0 0 18px; color: var(--mr-muted); line-height: 1.7; }
+.mg-runner-paused { z-index: 1; align-content: center; justify-items: center; background: #071321bb; }
+.mg-runner-paused p { margin-bottom: 10px; color: var(--mr-ink); font-weight: 800; font-size: 1.4rem; }
+.mg-runner-primary, .mg-runner-secondary, .mg-runner-jump { min-height: 48px; border: 0; border-radius: 12px; font: inherit; font-weight: 750; cursor: pointer; touch-action: manipulation; transition: filter .15s ease, transform .15s ease; }
+.mg-runner-primary { min-width: 150px; padding: 10px 22px; color: #092329; background: var(--mr-accent); }
+.mg-runner-secondary { padding: 9px 17px; color: var(--mr-ink); background: #1b3854; border: 1px solid #527087; }
+.mg-runner-jump { min-width: 112px; min-height: 58px; padding: 10px 26px; color: #2d2107; background: var(--mr-gold); font-size: 1.1rem; }
+.mg-runner-primary:hover:not(:disabled), .mg-runner-secondary:hover:not(:disabled), .mg-runner-jump:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
+.mg-runner-primary:focus-visible, .mg-runner-secondary:focus-visible, .mg-runner-jump:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.mg-runner-primary:disabled, .mg-runner-secondary:disabled { opacity: .52; cursor: not-allowed; }
+.mg-runner-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 15px; }
+.mg-runner-help { margin: 0; color: var(--mr-muted); font-size: .92rem; }
+.mg-runner-actions { display: flex; align-items: center; gap: 10px; }
+.mg-runner-status { min-height: 1.4em; margin: 11px 0 0; color: var(--mr-muted); font-size: .88rem; }
+@media (max-width: 600px) {
+  .mg-runner-shell { padding: 14px; border-radius: 16px; }
+  .mg-runner-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .mg-runner-stats { width: 100%; justify-content: stretch; }
+  .mg-runner-stats span { flex: 1 1 auto; text-align: center; padding: 7px 8px; font-size: .82rem; }
+  .mg-runner-stage { min-height: 230px; aspect-ratio: 1.25 / 1; }
+  .mg-runner-canvas { min-height: 230px; }
+  .mg-runner-controls { align-items: stretch; flex-direction: column; }
+  .mg-runner-help { text-align: center; }
+  .mg-runner-actions { justify-content: space-between; }
+  .mg-runner-jump { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mg-runner-primary, .mg-runner-secondary, .mg-runner-jump { transition: none; }
+}
