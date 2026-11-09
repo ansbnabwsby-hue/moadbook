@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "moadbook-pwa-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v62`;
+const CACHE_NAME = `${CACHE_PREFIX}v63`;
 const APP_ROOT = new URL("./", self.registration.scope);
 const SCOPE_PATH = APP_ROOT.pathname;
 const SHELL_URLS = [
@@ -21,6 +21,7 @@ const SHELL_URLS = [
   new URL("./games/play.js", APP_ROOT).href,
   new URL("./games/shared/api.js", APP_ROOT).href,
   new URL("./games/shared/catalog.js", APP_ROOT).href,
+  new URL("./games/shared/sound.js", APP_ROOT).href,
   new URL("./games/shared/games.css", APP_ROOT).href,
   new URL("./games/runner/index.html", APP_ROOT).href,
   new URL("./games/runner/game.js", APP_ROOT).href,
@@ -32,6 +33,9 @@ const SHELL_URLS = [
   new URL("./games/block-puzzle/game.js", APP_ROOT).href,
   new URL("./games/snake/index.html", APP_ROOT).href,
   new URL("./games/snake/game.js", APP_ROOT).href,
+  new URL("./games/tic-tac-toe/index.html", APP_ROOT).href,
+  new URL("./games/tic-tac-toe/game.js", APP_ROOT).href,
+  new URL("./games/tic-tac-toe/game.css", APP_ROOT).href,
 ];
 
 self.addEventListener("install", (event) => {

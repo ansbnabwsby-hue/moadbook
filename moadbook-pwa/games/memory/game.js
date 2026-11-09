@@ -70,7 +70,9 @@ export function mountGame(root, { onStart = () => null, onCancel = () => {}, onF
     const stats = make('div', 'mg-memory-stats');
     for (const [label, key, value] of [['الوقت', 'time', '00:00'], ['الحركات', 'moves', '0'], ['المستوى', 'level', ''], ['أفضل نتيجة', 'best', '']]) {
       const item = make('div', 'mg-memory-stat');
-      item.append(make('span', 'mg-memory-stat-label', label), Object.assign(make('strong', 'mg-memory-stat-value', value), { dataset: { [key]: '' } }));
+      const valueNode = make('strong', 'mg-memory-stat-value', value);
+      valueNode.dataset[key] = '';
+      item.append(make('span', 'mg-memory-stat-label', label), valueNode);
       stats.append(item);
     }
     const controls = make('div', 'mg-memory-controls');
