@@ -486,7 +486,7 @@ function renderAdmin() {
   attachChallengeForm(games.filter(game => game.enabled), adminOverview?.settings || {});
 }
 
-async function refreshAll() {
+async function refreshAll(showSuccess = true) {
   const button = $('mgRefresh'); button.disabled = true;
   try {
     try {
@@ -496,7 +496,7 @@ async function refreshAll() {
     renderCatalog();
     await loadDashboard();
     if (isAdmin && activeView === 'admin') await loadAdmin();
-    notify('تم تحديث مركز الألعاب.', 'success');
+    if (showSuccess) notify('تم تحديث مركز الألعاب.', 'success');
   } finally { button.disabled = false; }
 }
 
@@ -514,7 +514,7 @@ async function boot() {
   }
   const requested = location.hash.slice(1);
   if (['leaderboard','profile','admin'].includes(requested) && (requested !== 'admin' || isAdmin)) showView(requested);
-  await refreshAll();
+  await refreshAll(false);
 }
 
 void boot();
