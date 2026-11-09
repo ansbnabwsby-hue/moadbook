@@ -3,7 +3,7 @@ import { GAME_DEFS } from './shared/catalog.js';
 
 const $ = (id) => document.getElementById(id);
 const ADMIN_EMAIL = 'moad33@accounts.example.com';
-const ICONS = { runner: '↗', memory: '◇', quiz: '؟', 'block-puzzle': '▦', snake: '⌁' };
+const ICONS = { runner: '↗', memory: '◇', quiz: '؟', 'block-puzzle': '▦', snake: '⌁', 'tic-tac-toe': '×' };
 const nodes = {
   identity: $('mgIdentity'), notice: $('mgNotice'), featured: $('mgFeaturedGames'), all: $('mgAllGames'),
   count: $('mgGameCount'), quickStats: $('mgQuickStats'), challenges: $('mgDailyChallenges'),
@@ -19,6 +19,7 @@ let catalog = GAME_DEFS.map(game => ({ ...game, enabled: true }));
 let dashboard = null;
 let adminOverview = null;
 let activeView = 'discover';
+let discoverFilter = 'all';
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -74,6 +75,7 @@ function makeGameCard(game, featured = false) {
 
 function renderCatalog() {
   const enabled = catalog.filter(game => game.enabled !== false);
+  const query = String($('mgGameSearch')?.value || '').trim().toLocaleLowerCase('ar');
   const gameFilter = $('mgLeaderboardGame');
   if (gameFilter) {
     const previous = gameFilter.value || 'overall';
@@ -82,9 +84,17 @@ function renderCatalog() {
     gameFilter.value = options.some(option => option.value === previous) ? previous : 'overall';
   }
   const featured = enabled.filter(game => game.featured).slice(0, 3);
+  const visibleGames = enabled.filter(game => {
+    if (discoverFilter === 'featured' && !game.featured) return false;
+    if (!query) return true;
+    return [game.name, game.title, game.description, game.id].some(value => String(value || '').toLocaleLowerCase('ar').includes(query));
+  });
   nodes.featured.replaceChildren(...(featured.length ? featured.map(game => makeGameCard(game, true)) : [empty('لا توجد ألعاب مميزة حاليًا.') ]));
-  nodes.all.replaceChildren(...(enabled.length ? enabled.map(game => makeGameCard(game)) : [empty('لا توجد ألعاب متاحة حاليًا.') ]));
-  nodes.count.textContent = `${number(enabled.length)} ألعاب`;
+  const showFeatured = !query && discoverFilter === 'all' && featured.length > 0;
+  nodes.featured.hidden = !showFeatured;
+  if (nodes.featured.previousElementSibling) nodes.featured.previousElementSibling.hidden = !showFeatured;
+  nodes.all.replaceChildren(...(visibleGames.length ? visibleGames.map(game => makeGameCard(game)) : [empty(query || discoverFilter === 'featured' ? 'لا توجد ألعاب تطابق هذا البحث أو الفلتر.' : 'لا توجد ألعاب متاحة حاليًا.') ]));
+  nodes.count.textContent = query || discoverFilter === 'featured' ? `${number(visibleGames.length)} نتيجة` : `${number(enabled.length)} ألعاب`;
   const recent = getRecentGames().map(id => catalog.find(game => game.id === id)).filter(game => game && game.enabled !== false).slice(0, 5);
   nodes.recent.replaceChildren(...(recent.length ? recent.map(game => {
     const card = element('a', 'mg-recent-card');
@@ -214,6 +224,17 @@ function showView(view) {
 
 document.querySelectorAll('.mg-tab[data-view]').forEach(tab => tab.addEventListener('click', () => showView(tab.dataset.view)));
 document.querySelectorAll('[data-open-view]').forEach(link => link.addEventListener('click', event => { event.preventDefault(); showView(link.dataset.openView); }));
+const gameSearch = $('mgGameSearch');
+gameSearch?.addEventListener('input', renderCatalog);
+document.querySelectorAll('[data-game-filter]').forEach(button => button.addEventListener('click', () => {
+  discoverFilter = button.dataset.gameFilter === 'featured' ? 'featured' : 'all';
+  document.querySelectorAll('[data-game-filter]').forEach(item => {
+    const active = item === button;
+    item.classList.toggle('active', active);
+    item.setAttribute('aria-pressed', String(active));
+  });
+  renderCatalog();
+}));
 $('mgRefresh')?.addEventListener('click', () => { void refreshAll(); });
 $('mgLeaderboardLoad')?.addEventListener('click', () => { void loadLeaderboard(); });
 $('mgLeaderboardGame')?.addEventListener('change', () => { if (activeView === 'leaderboard') void loadLeaderboard(); });

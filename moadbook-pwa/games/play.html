@@ -13,7 +13,12 @@
   <header class="mg-topbar">
     <a class="mg-back-link" id="mgExit" href="./" aria-label="العودة إلى الألعاب">‹ <span>الألعاب</span></a>
     <a class="mg-wordmark" href="./" aria-label="العودة إلى مركز الألعاب"><span class="mg-mark">M</span><span>MOADBOOK <b>GAMES</b></span></a>
-    <button id="mgFullscreen" class="mg-icon-btn" type="button" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>
+    <div class="mg-top-actions">
+      <button id="mgSoundToggle" class="mg-icon-btn mg-sound-toggle" type="button" aria-label="إيقاف صوت الألعاب" title="الصوت مفعّل" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z" fill="currentColor"/><g data-sound-waves fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path d="M16 9a5 5 0 0 1 0 6"/><path d="M18.5 6.5a8.5 8.5 0 0 1 0 11"/></g><path data-sound-muted d="m16 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" hidden/></svg>
+      </button>
+      <button id="mgFullscreen" class="mg-icon-btn" type="button" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>
+    </div>
   </header>
   <main class="mg-play-main">
     <header class="mg-play-header">

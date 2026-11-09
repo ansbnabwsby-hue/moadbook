@@ -1,5 +1,6 @@
 import { GAME_DEFS, GAME_IDS } from './shared/catalog.js';
 import { answerGameQuestion, cancelGameSession, finishGameSession, gamesApi, getMoadbookSession, startGameSession } from './shared/api.js';
+import { isGameSoundEnabled, playGameSound, setGameSoundEnabled } from './shared/sound.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -17,6 +18,7 @@ const restartButton = $('mgRestart');
 const scoreNode = $('mgPlayScore');
 const bestNode = $('mgPlayBest');
 const fullscreenButtons = [$('mgFullscreen'), $('mgPlayFullscreen')].filter(Boolean);
+const soundToggle = $('mgSoundToggle');
 let instance = null;
 let activeSession = null;
 let sessionReady = false;
@@ -107,6 +109,36 @@ document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) stage.classList.remove('mg-fullscreen-fallback');
 });
 
+function syncSoundToggle() {
+  if (!soundToggle) return;
+  const enabled = isGameSoundEnabled();
+  soundToggle.setAttribute('aria-pressed', String(enabled));
+  soundToggle.setAttribute('aria-label', enabled ? 'إيقاف صوت الألعاب' : 'تشغيل صوت الألعاب');
+  soundToggle.title = enabled ? 'الصوت مفعّل' : 'الصوت متوقف';
+  soundToggle.classList.toggle('is-muted', !enabled);
+  const waves = soundToggle.querySelector('[data-sound-waves]');
+  const muted = soundToggle.querySelector('[data-sound-muted]');
+  if (waves) waves.hidden = !enabled;
+  if (muted) muted.hidden = enabled;
+}
+soundToggle?.addEventListener('click', () => {
+  const enabled = setGameSoundEnabled(!isGameSoundEnabled());
+  syncSoundToggle();
+  if (enabled) playGameSound('success');
+});
+syncSoundToggle();
+
+function soundForPointer(event) {
+  const target = event.target;
+  if (!(target instanceof Element) || target.closest('button:disabled, input, select, textarea')) return;
+  if (target.closest('button, canvas, [role="button"]')) playGameSound('tap');
+}
+function soundForKey(event) {
+  if (['Enter', ' ', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key)) playGameSound('tap');
+}
+root.addEventListener('pointerdown', soundForPointer, true);
+root.addEventListener('keydown', soundForKey, true);
+
 async function startSession(requestedGameId, options = {}) {
   if (!user || requestedGameId !== gameId) throw new Error('AUTH_REQUIRED');
   finished = false;
@@ -150,6 +182,7 @@ async function submitResult(session, result) {
   finished = true;
   setGameControls(false);
   if (!session?.id || !sessionReady) {
+    playGameSound('finish');
     showStatus('اكتملت الجولة المحلية. هذه النتيجة لا تُضاف إلى ترتيب Moadbook.', 'warning');
     showFinish(`نتيجتك على هذا الجهاز: ${Math.max(0, Math.floor(Number(result?.score) || 0))}. اتصل بالخادم وابدأ جولة جديدة لتوثيق النتائج.`, 'local');
     return { accepted: false, status: 'local' };
@@ -157,6 +190,7 @@ async function submitResult(session, result) {
   try {
     const receipt = await finishGameSession(session, result);
     const officialScore = Number.isFinite(Number(receipt?.verifiedScore)) ? Number(receipt.verifiedScore) : 0;
+    playGameSound(receipt?.accepted === true ? 'finish' : 'error');
     scoreNode.textContent = String(officialScore);
     const points = Math.max(0, Number(receipt?.pointsAwarded) || 0);
     if (receipt?.accepted === true) {
@@ -222,6 +256,9 @@ async function boot() {
       onFinish: submitResult,
       onStatus: (message, kind = 'info') => {
         if (message) showStatus(message, kind);
+        const text = String(message || '');
+        if (/تطابق صحيح|إجابة صحيحة|ممتاز!|اكتمل التحدي|انتصرت|فزت/.test(text)) playGameSound('success');
+        else if (/إجابة غير صحيحة|لا يمكن وضع|اصطدمت|خسرت/.test(text)) playGameSound('error');
         if (/انتهت الجولة|انتهت اللعبة|انتهى الوقت|اكتملت/.test(String(message))) {
           setGameControls(false);
           if (!finished) showFinish('جارٍ التحقق من النتيجة…', 'pending');
@@ -243,6 +280,8 @@ async function boot() {
 window.addEventListener('pagehide', () => {
   destroyed = true;
   try { instance?.destroy?.(); } catch { /* Best-effort teardown. */ }
+  root.removeEventListener('pointerdown', soundForPointer, true);
+  root.removeEventListener('keydown', soundForKey, true);
 });
 
 void boot();

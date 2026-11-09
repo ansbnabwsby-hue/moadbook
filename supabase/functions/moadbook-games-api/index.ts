@@ -7,7 +7,7 @@ const JWKS = createRemoteJWKSet(new URL(
   "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com",
 ));
 const ADMIN_EMAIL = "moad33@accounts.example.com";
-const ALLOWED_GAMES = new Set(["runner", "memory", "quiz", "block-puzzle", "snake"]);
+const ALLOWED_GAMES = new Set(["runner", "memory", "quiz", "block-puzzle", "snake", "tic-tac-toe"]);
 const SETTINGS = new Set(["completion_points", "perfect_quiz_points", "daily_challenge_default_points"]);
 const MAX_BODY_BYTES = 32 * 1024;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

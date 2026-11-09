@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <title>إكس أو — MOADBOOK GAMES</title>
+  <link rel="icon" href="../../moadbook-icon.png">
+  <link rel="stylesheet" href="../shared/games.css">
+  <link rel="stylesheet" href="./game.css">
+  <meta http-equiv="refresh" content="0;url=../play.html?game=tic-tac-toe">
+</head>
+<body data-page="game" data-game="tic-tac-toe">
+  <header class="mg-topbar">
+    <a class="mg-back-link" href="../" aria-label="العودة لمركز الألعاب">‹ <span>الألعاب</span></a>
+    <a class="mg-wordmark" href="../"><span class="mg-mark">M</span><span>MOADBOOK <b>GAMES</b></span></a>
+    <button class="mg-icon-btn" type="button" id="mgFullscreen" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>
+  </header>
+  <main class="mg-play-main">
+    <section id="mgPlayShell" class="mg-play-shell">
+      <header class="mg-play-header">
+        <div class="mg-play-title"><h1 id="mgGameTitle">إكس أو</h1><p>تحدَّ الروبوت في جولة سريعة</p></div>
+        <div class="mg-play-stats"><div class="mg-play-stat"><strong id="mgCurrentScore">0</strong><span>النتيجة</span></div><div class="mg-play-stat"><strong id="mgElapsed">00:00</strong><span>الوقت</span></div></div>
+      </header>
+      <nav class="mg-play-controls" aria-label="أدوات الجولة">
+        <button id="mgPause" class="mg-control-btn" type="button">إيقاف مؤقت</button>
+        <button id="mgResume" class="mg-control-btn primary" type="button">استئناف</button>
+        <button id="mgRestart" class="mg-control-btn" type="button">إعادة الجولة</button>
+        <a class="mg-control-btn" href="../">الخروج إلى الألعاب</a>
+        <a class="mg-control-btn" href="../../index.html">Moadbook</a>
+      </nav>
+      <div id="mgGameStatus" class="mg-game-status" role="status" aria-live="polite">جارٍ تحميل اللعبة…</div>
+      <div id="mgModuleRoot" class="mg-module-root"></div>
+      <div id="mgFinish" class="mg-finish-banner" hidden></div>
+    </section>
+    <div id="mgAuthGate" class="mg-auth-card" hidden></div>
+  </main>
+  <script src="../../firebase-config.js"></script>
+  <script src="../../supabase-config.js"></script>
+  <script>location.replace('../play.html?game=tic-tac-toe');</script>
+</body>
+</html>
