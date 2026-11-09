@@ -15,3 +15,92 @@
 @media(prefers-reduced-motion:reduce){.mg-game-card:hover,.mg-game-card:hover .mg-game-icon,.mg-play-link:hover{transform:none!important}.mg-game-icon,.mg-play-link{transition:none!important}}
 
 .mg-featured-grid[hidden],.mg-section-head[hidden]{display:none!important}
+
+
+/* Moadbook Arcade UI polish — stronger hierarchy, game identity and thumb-friendly discovery. */
+body::before{position:fixed;inset:0;z-index:-1;background-image:radial-gradient(#a89aff18 1px,transparent 1px);background-size:28px 28px;content:"";mask-image:linear-gradient(to bottom,#000 0,transparent 78%);pointer-events:none}
+.mg-topbar{border-bottom-color:#a99cff20;box-shadow:0 8px 30px #02040b30}
+.mg-main{padding-top:28px}
+.mg-hero{min-height:310px;border-color:#a99cff28;background:radial-gradient(ellipse at 18% 0%,#a78bfa20,transparent 38%),radial-gradient(ellipse at 83% 100%,#49d9bd14,transparent 42%),linear-gradient(118deg,#17172f 0%,#182743 56%,#10332f 100%)}
+.mg-hero::after{position:absolute;inset:auto 12% -210px auto;width:360px;height:280px;border:1px solid #ffffff0b;border-radius:50%;box-shadow:0 0 0 26px #ffffff05,0 0 0 54px #ffffff03;content:"";pointer-events:none}
+.mg-hero-copy{max-width:620px}
+.mg-hero h1{font-size:clamp(38px,6.4vw,66px);text-wrap:balance}
+.mg-hero p{max-width:450px;font-size:15px;line-height:1.8}
+.mg-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px}
+.mg-hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:15px;min-height:46px;padding:0 18px;border:1px solid #a9f1dc52;border-radius:14px;background:linear-gradient(135deg,#71e4c7,#45bda6);box-shadow:0 10px 28px #44c7a633;color:#09241f;font-size:13px;font-weight:950;transition:transform .18s,box-shadow .18s}
+.mg-hero-cta span{font-size:18px;line-height:1}
+.mg-hero-cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px #44c7a64a}
+.mg-hero-note{display:inline-flex;align-items:center;gap:8px;color:#c6d3e3;font-size:11px;font-weight:750}
+.mg-hero-note i{width:8px;height:8px;border-radius:50%;background:var(--mg-mint);box-shadow:0 0 13px #6be6c6a0}
+.mg-hero-art{width:250px;height:230px}
+.mg-art-disc{width:168px;height:168px;box-shadow:0 0 0 18px #b9a6ff15,0 0 0 38px #b9a6ff09,0 22px 65px #090919}
+.mg-tabs{position:sticky;top:68px;z-index:15;box-shadow:0 10px 24px #060a1426}
+.mg-section-head{scroll-margin-top:145px}
+.mg-section-head h2{font-size:clamp(21px,3vw,27px);letter-spacing:-.02em}
+.mg-section-mark{padding:6px 9px;border:1px solid #ffffff12;border-radius:999px;background:#ffffff05;font-size:9px;font-weight:900}
+.mg-featured-grid{gap:15px}
+.mg-featured-grid .mg-game-card{min-height:230px;padding:22px}
+.mg-games-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.mg-game-card{min-height:210px;padding:20px;border-color:#ffffff16;background:linear-gradient(150deg,#17233a 0%,#111827 72%,#111c2a 100%);box-shadow:0 8px 22px #0509162b}
+.mg-game-card::before{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,#ffffff09,transparent 45%);content:"";pointer-events:none}
+.mg-game-card::after{inset:auto -30px -55px auto;width:180px;height:180px;opacity:.13;filter:blur(18px)}
+.mg-game-card-top{min-height:58px}
+.mg-game-icon{position:relative;width:58px;height:58px;border:1px solid color-mix(in srgb,var(--game-glow,var(--mg-violet)) 38%,transparent);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--game-glow,var(--mg-violet)) 22%,#182238),#111827);box-shadow:inset 0 1px #ffffff16,0 8px 20px #03061040;color:var(--game-glow,var(--mg-violet));font-size:30px}
+.mg-game-title{margin-top:17px;font-size:16px;letter-spacing:-.01em}
+.mg-game-desc{max-width:38ch;font-size:11px;line-height:1.75}
+.mg-game-badge{padding:6px 10px;border-color:#ffffff1c;background:#ffffff09;font-size:10px}
+.mg-play-link{min-height:34px;padding:6px 12px;border:1px solid #6be6c638;border-radius:999px;background:#6be6c60d;font-size:12px}
+.mg-play-link::after{content:"";position:absolute;inset:0}
+.mg-game-card:has(.mg-play-link:hover){border-color:#6be6c66b}
+.mg-discovery-tools{position:sticky;top:129px;z-index:10;box-shadow:0 12px 26px #060a1428;backdrop-filter:blur(16px)}
+.mg-search-wrap{min-height:48px}
+.mg-game-filter{min-height:42px;transition:background .16s,border-color .16s,color .16s}
+.mg-dashboard-grid{gap:15px;margin-top:30px}
+.mg-panel{box-shadow:0 10px 26px #03071325}
+.mg-panel-head{padding-bottom:11px;border-bottom:1px solid #ffffff0d}
+.mg-footer{padding-top:17px;border-top:1px solid #ffffff10}
+.mg-play-shell{border-color:#a99cff26;background:radial-gradient(ellipse at 50% 0%,#8e79ef0c,transparent 45%),linear-gradient(150deg,#131d33,#0d1423);box-shadow:0 28px 76px #02040bcc}
+.mg-play-controls{padding:9px;border:1px solid #ffffff11;border-radius:16px;background:#ffffff04}
+.mg-control-btn{min-height:40px;padding:8px 14px;transition:background .16s,border-color .16s,transform .16s}
+.mg-control-btn:hover:not(:disabled){transform:translateY(-1px);border-color:#a99cff70;background:#a99cff14}
+.mg-sound-toggle{transition:transform .16s,color .16s,background .16s}
+.mg-sound-toggle:active{transform:scale(.94)}
+@media(max-width:760px){
+  .mg-main{padding:16px 14px calc(48px + env(safe-area-inset-bottom))}
+  .mg-hero{min-height:0;padding:28px 23px;gap:8px}
+  .mg-hero-actions{gap:10px;margin-top:18px}
+  .mg-hero-cta{min-height:44px;padding:0 14px}
+  .mg-hero-note{font-size:10px}
+  .mg-hero-art{width:138px;height:154px}
+  .mg-art-disc{width:108px;height:108px}
+  .mg-tabs{top:58px}
+  .mg-discovery-tools{top:115px}
+  .mg-featured-grid{grid-template-columns:none;grid-auto-columns:minmax(265px,82%);grid-auto-flow:column;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:inline mandatory;scrollbar-width:thin;padding:2px 1px 11px}
+  .mg-featured-grid .mg-game-card,.mg-featured-grid .mg-game-card:last-child{display:flex;min-height:205px;scroll-snap-align:start}
+  .mg-games-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .mg-games-grid .mg-game-card{min-height:190px;padding:15px}
+  .mg-game-icon{width:50px;height:50px;border-radius:16px;font-size:26px}
+  .mg-game-title{font-size:14px}
+  .mg-game-desc{font-size:10px}
+  .mg-play-link{font-size:11px}
+}
+@media(max-width:420px){
+  .mg-hero{padding:23px 16px}
+  .mg-hero-art{width:94px;height:124px}
+  .mg-art-disc{width:82px;height:82px;box-shadow:0 0 0 12px #b9a6ff14,0 0 0 25px #b9a6ff08,0 14px 36px #090919}
+  .mg-art-disc span{font-size:35px}
+  .mg-hero h1{font-size:34px}
+  .mg-hero p{font-size:12px}
+  .mg-hero-actions{align-items:flex-start;flex-direction:column}
+  .mg-hero-note{font-size:9px}
+  .mg-games-grid{gap:8px}
+  .mg-games-grid .mg-game-card{min-height:184px;padding:13px}
+  .mg-games-grid .mg-game-icon{width:46px;height:46px;font-size:24px}
+  .mg-games-grid .mg-game-title{font-size:12px;margin-top:12px}
+  .mg-games-grid .mg-game-desc{font-size:9px}
+  .mg-game-badge{font-size:9px;padding:5px 8px}
+  .mg-game-card-bottom{margin-top:12px}
+  .mg-game-card .mg-play-link{font-size:10px}
+}
+@media(max-width:350px){.mg-wordmark{font-size:9px}.mg-hero-art{display:none}.mg-hero{padding:22px 18px}.mg-games-grid .mg-game-card{min-height:192px}}
+@media(prefers-reduced-motion:reduce){.mg-hero-cta,.mg-control-btn,.mg-sound-toggle,.mg-game-card,.mg-play-link{transition:none!important}.mg-hero-cta:hover,.mg-control-btn:hover:not(:disabled){transform:none}}

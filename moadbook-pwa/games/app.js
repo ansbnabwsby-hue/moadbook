@@ -55,6 +55,7 @@ function adminNotify(message, kind = 'info') {
 
 function makeGameCard(game, featured = false) {
   const card = element('article', 'mg-game-card');
+  card.dataset.game = game.id;
   card.dataset.accent = ['mint', 'gold', 'blue', 'green', 'violet'].includes(game.accent) ? game.accent : 'violet';
   if (!game.enabled) card.classList.add('mg-disabled-card');
   const top = element('div', 'mg-game-card-top');
