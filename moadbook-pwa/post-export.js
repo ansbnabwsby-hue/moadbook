@@ -17,7 +17,7 @@ function drawImageContain(ctx,image,x,y,w,h){const scale=Math.min(w/image.natura
 async function renderCard(post,mode,layout){
  const width=1080,pad=68,baseHeight=layout==='story'?1920:layout==='portrait'?1350:1080;
  await Promise.all([loadFont('400'),loadFont('700')]);
- const [brandSrc,postImageSrc,avatarSrc]=await Promise.all([dataImage('moadbook-brand.png'),imageForPost(post),avatarForPost(post)]);
+ const [brandSrc,postImageSrc,avatarSrc]=await Promise.all([dataImage('moadbook-brand.webp'),imageForPost(post),avatarForPost(post)]);
  const [brand,photo,avatar]=await Promise.all([loadImage(brandSrc),postImageSrc?loadImage(postImageSrc).catch(()=>null):null,avatarSrc?loadImage(avatarSrc).catch(()=>null):null]);
  if(post.has_media&&!photo&&!exportNotice)exportNotice='تعذر تضمين صورة المنشور؛ أُخرج النص والإسناد فقط. قد تمنع سياسة CORS تضمين الرابط الخارجي.';
  const text=postText(post)||'منشور من moadbook';
