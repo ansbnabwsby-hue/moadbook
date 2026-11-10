@@ -130,8 +130,7 @@ button,input,textarea,select{font-family:inherit}
 .icon-button{display:grid;place-items:center}.nav-btn{display:grid;justify-items:center;align-content:center;gap:3px}.nav-btn .nav-icon{width:20px;height:20px}
 .tool-chip{display:inline-flex;align-items:center;justify-content:center;gap:7px}.action-button{display:flex;align-items:center;justify-content:center;gap:5px}
 .topbar{box-shadow:0 8px 28px #37327b0a}.topbar:after{content:'';position:absolute;inset:auto 18px -1px;height:1px;background:linear-gradient(90deg,transparent,var(--accent)55%,#ec7da7,transparent);opacity:.45}
-.page{perspective:1100px;transform-style:preserve-3d}.page.active{animation:pageEnter3D .38s cubic-bezier(.18,.8,.2,1) both}@keyframes pageEnter3D{from{opacity:0;transform:perspective(1100px) translateY(12px) rotateX(1.25deg) scale(.99)}to{opacity:1;transform:perspective(1100px) translateY(0) rotateX(0) scale(1)}}
-.feed-item{transform-style:preserve-3d;backface-visibility:hidden}.feed-item:active{transform:perspective(900px) translateY(1px) rotateX(.35deg) scale(.998)}
+.page{perspective:none;transform-style:flat}.page.active{animation:moadbookPageEnter .14s ease-out both}@keyframes moadbookPageEnter{from{opacity:.72}to{opacity:1}} .feed-item{transform-style:flat;backface-visibility:visible}.feed-item:active{transform:perspective(900px) translateY(1px) rotateX(.35deg) scale(.998)}
 @media(hover:hover){.feed-item:hover{transform:perspective(1000px) translateY(-2px) rotateX(.35deg);box-shadow:0 18px 44px #28215f15}.btn:hover,.tool-chip:hover{filter:brightness(1.035);transform:translateY(-1px)}}
 .profile-hero{position:relative;overflow:hidden;padding:0 16px 17px;border:1px solid #ffffffa8;box-shadow:0 18px 42px #4737b516;background:linear-gradient(145deg,#f0edff,#fff7fb 74%,#f8f8ff)}
 .profile-cover{height:112px;margin:0 -16px 0;position:relative;overflow:hidden;display:flex;align-items:flex-start;padding:15px 17px;color:#fff;text-align:right;background:linear-gradient(115deg,var(--accent),#8361e8 53%,#e76ba4)}
@@ -519,3 +518,34 @@ body.mills-fullscreen #page-mills #millsAnnouncement{position:absolute;z-index:6
 .mills-announcement-clip>#millsAnnouncementText,.admin-mills-announcement-preview .mills-announcement-clip>#adminMillsAnnouncementPreviewText{position:absolute;top:50%;right:0;left:auto;display:flex;align-items:center;gap:12px;direction:ltr;width:max-content;min-width:0;max-width:none;transform:translateY(-50%);animation-name:millsAnnouncementLoop;animation-timing-function:linear;animation-iteration-count:infinite;white-space:nowrap;color:inherit}
 .mills-announcement-clip>#millsAnnouncementText>.mills-announcement-copy,.admin-mills-announcement-preview .mills-announcement-clip>#adminMillsAnnouncementPreviewText>.mills-announcement-copy{position:static;top:auto;right:auto;left:auto;display:inline-block;flex:0 0 auto;width:auto;min-width:0;max-width:none;transform:none;animation:none;color:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;direction:rtl;unicode-bidi:plaintext;white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.mills-announcement-clip>#millsAnnouncementText,.admin-mills-announcement-preview .mills-announcement-clip>#adminMillsAnnouncementPreviewText{position:static;display:block;width:auto;max-width:100%;transform:none;animation:none;white-space:normal}.mills-announcement-clip>#millsAnnouncementText>.mills-announcement-copy:first-child,.admin-mills-announcement-preview .mills-announcement-clip>#adminMillsAnnouncementPreviewText>.mills-announcement-copy:first-child{position:static;display:block;width:auto;white-space:normal}.mills-announcement-clip>#millsAnnouncementText>.mills-announcement-copy[aria-hidden=true],.admin-mills-announcement-preview .mills-announcement-clip>#adminMillsAnnouncementPreviewText>.mills-announcement-copy[aria-hidden=true]{display:none!important}}
+
+
+/* مشغل ميلز: تحكم واضح وطبقات زجاجية خفيفة تناسب الفيديو العمودي والهاتف. */
+.mills-play-toggle{position:absolute;z-index:4;top:50%;left:50%;display:grid;place-items:center;width:62px;height:62px;padding:0;border:1px solid #ffffff72;border-radius:50%;background:linear-gradient(145deg,#a99affd9,#5948c9db);color:#fff;font:900 21px/1 system-ui,sans-serif;box-shadow:0 10px 32px #07081470,inset 0 1px #ffffff54;backdrop-filter:blur(16px);transform:translate(-50%,-50%);cursor:pointer;transition:background .18s,opacity .18s,box-shadow .18s,scale .18s}
+.mills-play-toggle.is-playing{background:#111525a8;opacity:.76}
+.mills-play-toggle:hover,.mills-play-toggle:focus-visible{opacity:1;box-shadow:0 12px 36px #07081490,inset 0 1px #ffffff7a;scale:1.06}
+.mills-play-toggle:focus-visible,.mills-seek:focus-visible{outline:3px solid #d9ccff;outline-offset:3px}
+.mills-play-toggle:disabled{opacity:.35;cursor:not-allowed}
+.mills-playback{position:absolute;z-index:4;inset-inline:12px 72px;bottom:calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:11px;min-height:44px;padding:0 13px;border:1px solid #ffffff30;border-radius:999px;background:linear-gradient(115deg,#111525e8,#17192dbf);box-shadow:0 8px 22px #07081456,inset 0 1px #ffffff1b;color:#fff;backdrop-filter:blur(16px)}
+.mills-seek{flex:1;min-width:36px;height:5px;margin:0;border:0;border-radius:999px;appearance:none;direction:ltr;background:linear-gradient(to right,#b8a7ff var(--seek-progress,0%),#ffffff45 var(--seek-progress,0%));cursor:pointer;touch-action:pan-y}
+.mills-seek:disabled{opacity:.5;cursor:default}
+.mills-seek::-webkit-slider-thumb{width:13px;height:13px;border:2px solid #fff;border-radius:50%;appearance:none;background:#8d7aff;box-shadow:0 1px 7px #0008}
+.mills-seek::-moz-range-thumb{width:10px;height:10px;border:2px solid #fff;border-radius:50%;background:#8d7aff;box-shadow:0 1px 7px #0008}
+.mills-time-readout{min-width:76px;color:#f7f5ff;font:700 10px/1.2 system-ui,sans-serif;font-variant-numeric:tabular-nums;text-align:center;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.mills-info{inset-inline:12px 72px;bottom:calc(65px + env(safe-area-inset-bottom));padding:11px 12px;border:1px solid #ffffff26;border-radius:17px;background:linear-gradient(135deg,#111525c9,#15172a8c);box-shadow:0 10px 28px #07081440;backdrop-filter:blur(15px)}
+.mills-info p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:6px;margin-bottom:4px}
+.mills-author strong{font-size:13px}
+.mills-sound{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 13px;border-color:#ffffff43;background:linear-gradient(120deg,#17192dbd,#11152591);box-shadow:0 6px 18px #07081440}
+.mills-sound:hover,.mills-sound:focus-visible{background:#ffffff30}
+body.mills-fullscreen .mills-playback{inset-inline:12px 74px;bottom:calc(10px + env(safe-area-inset-bottom))}
+body.mills-fullscreen .mills-info{inset-inline:12px 74px;bottom:calc(65px + env(safe-area-inset-bottom));padding:11px 12px}
+@media(max-width:520px){.mills-play-toggle{width:56px;height:56px;font-size:19px}.mills-playback{inset-inline:10px 64px;min-height:42px;gap:8px;padding-inline:10px}.mills-time-readout{min-width:69px;font-size:9px}.mills-info{inset-inline:10px 64px;bottom:calc(61px + env(safe-area-inset-bottom));padding:9px 10px}body.mills-fullscreen .mills-playback{inset-inline:10px 66px}body.mills-fullscreen .mills-info{inset-inline:10px 66px;bottom:calc(61px + env(safe-area-inset-bottom))}}
+
+/* توحيد إطار الفيديو المضمن مع البطاقات والوضع الداكن، دون تغيير مشغلات الجهات الخارجية. */
+.video-panel{border-radius:20px;box-shadow:0 10px 28px rgba(21,19,43,.1);transition:box-shadow .18s ease}
+.video-panel .video-embed,.video-panel .video-direct{border-radius:16px;box-shadow:0 7px 22px #10131b20;accent-color:var(--accent,#5147d9)}
+html.dark-mode .video-panel{background:linear-gradient(145deg,#1b1c2a,#12131c);border-color:#ffffff1d;color:#f4f3fb;box-shadow:0 10px 28px #0004}
+html.dark-mode .video-panel .video-embed,html.dark-mode .video-panel .video-direct{box-shadow:0 8px 24px #0006;outline:1px solid #ffffff12}
+@media(prefers-reduced-motion:reduce){.mills-play-toggle,.video-panel{transition:none}}
+
+@media(prefers-reduced-motion:reduce){.page.active{animation:none!important}}
