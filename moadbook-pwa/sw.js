@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "moadbook-pwa-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v70`;
+const CACHE_NAME = `${CACHE_PREFIX}v71`;
 const APP_ROOT = new URL("./", self.registration.scope);
 const SCOPE_PATH = APP_ROOT.pathname;
 const SHELL_URLS = [
@@ -9,9 +9,9 @@ const SHELL_URLS = [
   new URL("./moadbook-icon.png", APP_ROOT).href,
   new URL("./moadbook-brand.webp", APP_ROOT).href,
   new URL("./moadbook-welcome.webp", APP_ROOT).href,
-  new URL("./styles.css?v=64", APP_ROOT).href,
+  new URL("./styles.css?v=65", APP_ROOT).href,
   new URL("./admin.css?v=62", APP_ROOT).href,
-  new URL("./app.js?v=66", APP_ROOT).href,
+  new URL("./app.js?v=67", APP_ROOT).href,
   new URL("./admin-dashboard.js?v=62", APP_ROOT).href,
   new URL("./post-export.js?v=63", APP_ROOT).href,
   new URL("./firebase-config.js", APP_ROOT).href,
