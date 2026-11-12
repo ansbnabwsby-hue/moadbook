@@ -549,3 +549,15 @@ html.dark-mode .video-panel .video-embed,html.dark-mode .video-panel .video-dire
 @media(prefers-reduced-motion:reduce){.mills-play-toggle,.video-panel{transition:none}}
 
 @media(prefers-reduced-motion:reduce){.page.active{animation:none!important}}
+
+/* ميلز: اجعل بيانات الفيديو وشريط التقدم طبقة زجاجية ممتدة تحت أزرار التفاعل. */
+.mills-info{z-index:2;inset-inline:12px;padding-inline-end:88px}
+.mills-playback{z-index:2;inset-inline:12px;padding-inline-end:72px}
+.mills-rail{z-index:6}
+body.mills-fullscreen .mills-info{inset-inline:12px;padding-inline-end:96px}
+body.mills-fullscreen .mills-playback{inset-inline:12px;padding-inline-end:80px}
+@media(max-width:520px){.mills-info{inset-inline:10px;padding-inline-end:76px}.mills-playback{inset-inline:10px;padding-inline-end:60px}body.mills-fullscreen .mills-info{inset-inline:10px;padding-inline-end:82px}body.mills-fullscreen .mills-playback{inset-inline:10px;padding-inline-end:66px}}
+/* لا تحجب الصورة أثناء التشغيل؛ زر الاستئناف يظهر فقط بعد الإيقاف أو عند تنقل لوحة المفاتيح. */
+.mills-play-toggle.is-playing:not(:focus-visible){opacity:0;pointer-events:none;scale:.82;box-shadow:none}
+.mills-play-toggle.is-playing:focus-visible{opacity:1;pointer-events:auto;scale:1}
+@media(prefers-reduced-motion:reduce){.mills-play-toggle{transition:none}}
